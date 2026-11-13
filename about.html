@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — SiliconCraft</title>
+  <meta name="description" content="A community-driven platform bridging the gap between college education and real industry expectations in Embedded Systems, Electronics, and Semiconductors." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="about.html" class="nav-link active">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" id="user-nav-action" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container-narrow" style="padding: 5rem 1.5rem 6rem; max-width: 820px;">
+    
+    <div style="margin-bottom: 3rem;">
+      <span class="badge badge-pink" style="margin-bottom: 1.2rem; display: inline-block;">WHY THIS EXISTS</span>
+      <h1 style="font-size: clamp(2.2rem, 5vw, 3.2rem); color: #fff; line-height: 1.15; margin-bottom: 1.5rem;">
+        The guidance I wish I had when I was starting out.
+      </h1>
+      <p style="font-size: 1.25rem; color: var(--text-muted); line-height: 1.6; font-weight: 400;">
+        A community-driven platform for Embedded Systems, Electronics, VLSI, and Semiconductor enthusiasts, built to bridge the gap between college education and real industry expectations.
+      </p>
+    </div>
+
+    <!-- The Core Problem & Story -->
+    <div class="card card-glow" style="padding: 2.8rem; margin-bottom: 3rem; border-color: rgba(255, 42, 133, 0.35);">
+      <h2 style="font-size: 1.45rem; color: #fff; margin-bottom: 1.2rem; line-height: 1.3;">
+        Bridging the Gap Between College and Real Silicon
+      </h2>
+      <div style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.8; display: flex; flex-direction: column; gap: 1.25rem;">
+        <p>
+          If you've studied Electronics, Electrical, or Computer Engineering in college, you already know the disconnect: you spend years writing basic 8051 code or memorizing textbook equations, only to graduate and realize the industry has moved to 32-bit ARM Cortex, RISC-V, FreeRTOS, high-speed PCB routing, and nanometer silicon fabrication.
+        </p>
+        <p>
+          Students interested in hardware and embedded systems often struggle for years without direction—spending months trying to figure out what skills companies actually test, what kind of projects prove competence, and how working engineers actually built their careers.
+        </p>
+        <p style="color: #fff; font-weight: 500; border-left: 3px solid var(--neon-pink); padding-left: 1.2rem; margin: 0.5rem 0;">
+          SiliconCraft was built so that you don't have to wander blindly in the dark for years like I had to.
+        </p>
+      </div>
+    </div>
+
+    <!-- What We Do -->
+    <div style="margin-bottom: 3.5rem;">
+      <h2 style="font-size: 1.6rem; color: #fff; margin-bottom: 1.5rem;">What Happens Here</h2>
+      
+      <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+        
+        <div class="card" style="padding: 2rem;">
+          <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.6rem;">
+            <span style="color: var(--neon-pink);">🎙️</span> Conversations with Working Professionals
+          </h3>
+          <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem; margin: 0;">
+            We speak with engineers, researchers, founders, and technical leaders from semiconductor giants, tier-1 automotive suppliers, and hardware startups. They share their real career journeys, hiring realities, and what they actually look for during technical rounds.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 2rem;">
+          <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.6rem;">
+            <span style="color: var(--neon-pink);">📐</span> Practical Industry Insights
+          </h3>
+          <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem; margin: 0;">
+            No generic web-dev fluff. In-depth technical articles covering register-level programming, DMA circular buffers, FreeRTOS priority inversion, oscilloscope debugging, and hardware trade-offs.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 2rem;">
+          <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.6rem;">
+            <span style="color: var(--neon-pink);">🛠️</span> Real Projects & Community Help
+          </h3>
+          <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem; margin: 0;">
+            A central space to share verified hardware builds with complete bills of materials (BOM), schematics, and firmware repositories. When your UART drops packets or your I2C bus hangs, you have a community of people ready to help you debug.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 2rem;">
+          <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.6rem;">
+            <span style="color: var(--neon-pink);">💼</span> Direct Opportunities & Challenges
+          </h3>
+          <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem; margin: 0;">
+            Curated internship openings, entry-level fresher roles, and national hardware hackathons filtered strictly for electronics, firmware, and silicon roles.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- The Vision / Bottom Callout -->
+    <div class="card" style="padding: 2.8rem; background: rgba(14, 17, 24, 0.85); border-color: var(--border-pink); text-align: center;">
+      <h3 style="font-size: 1.5rem; color: #fff; margin-bottom: 1rem;">
+        In short: A platform built to help the next generation of hardware and embedded engineers find the guidance you wish you had.
+      </h3>
+      <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 2rem; max-width: 620px; margin-left: auto; margin-right: auto;">
+        Whether you are struggling with your first microcontroller project or preparing for your first semiconductor interview, this platform is for you.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="interviews.html" class="btn btn-primary">Read Industry Interviews →</a>
+        <a href="community.html" class="btn btn-outline">Join the Community</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Circuit Canvas Background -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+</body>
+</html>

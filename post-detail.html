@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Thread — SiliconCraft</title>
+  <meta name="description" content="Technical discussion thread and engineering replies." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link active">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" id="user-nav-action" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container-narrow" style="padding: 3.5rem 1.5rem 6rem;" id="post-thread-container">
+    <!-- Injected dynamically via JS -->
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Circuit Canvas Background -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const postId = urlParams.get('id') || 'post_01';
+      renderPostThread(postId);
+    });
+
+    function renderPostThread(postId) {
+      const store = SiliconData.get();
+      const post = (store.posts || []).find(p => p.id === postId) || store.posts[0];
+      const container = document.getElementById('post-thread-container');
+
+      if (!post) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 4rem 1rem;">
+            <h2 style="color: #fff; margin-bottom: 1rem;">Post Not Found</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">The discussion you are looking for has been moved or deleted.</p>
+            <a href="community.html" class="btn btn-outline">← Back to Discussions</a>
+          </div>
+        `;
+        return;
+      }
+
+      document.title = `${post.title} — SiliconCraft Community`;
+
+      const replies = post.replies || [
+        {
+          id: 'rep_1',
+          author: 'Vikram Joshi (Staff Firmware Engineer)',
+          time: '1 hour ago',
+          content: 'Verify your baud rate prescaler calculation. If your APB clock is 42MHz, the USARTDIV for 921600 baud has a fractional error with 16x oversampling. Try switching to 8x oversampling (OVER8 bit) in CR1 to halve your baud error.'
+        }
+      ];
+
+      const repliesHtml = replies.map(rep => `
+        <div class="card" style="padding: 1.5rem; margin-bottom: 1rem; background: rgba(14, 17, 24, 0.7);">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem;">
+            <strong style="color: #fff; font-size: 0.95rem;">${rep.author}</strong>
+            <span style="font-size: 0.78rem; color: var(--text-faint);">${rep.time}</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin: 0;">
+            ${rep.content}
+          </p>
+        </div>
+      `).join('');
+
+      container.innerHTML = `
+        <div style="margin-bottom: 2rem;">
+          <a href="community.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+            <span>←</span> Back to Discussions
+          </a>
+        </div>
+
+        <!-- Main Question / Post Card -->
+        <div class="card card-glow" style="padding: 2.5rem; margin-bottom: 2rem; border-color: ${post.solution ? 'rgba(0, 230, 118, 0.4)' : 'var(--border-pink)'};">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <span class="badge ${post.solution ? 'badge-circuit' : 'badge-pink'}">
+                ${post.solution ? '✓ SOLVED' : (post.type || 'QUESTION').toUpperCase()}
+              </span>
+              <span style="font-size: 0.82rem; color: var(--text-faint); font-family: var(--font-mono);">• ${post.time || 'Recently'}</span>
+            </div>
+            
+            <button class="btn btn-outline btn-sm" onclick="upvoteThread('${post.id}')">
+              ⚡ Upvote (<span id="thread-like-count">${post.likes || 0}</span>)
+            </button>
+          </div>
+
+          <h1 style="font-size: 1.85rem; color: #fff; line-height: 1.3; margin-bottom: 0.8rem;">
+            ${post.title}
+          </h1>
+
+          <div style="color: var(--text-faint); font-size: 0.9rem; margin-bottom: 1.5rem;">
+            Asked by <strong style="color: #fff;">${post.author}</strong>
+          </div>
+
+          <div style="color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem; white-space: pre-line;">
+            ${post.content}
+          </div>
+
+          ${post.solution ? `
+            <div style="background: rgba(0, 230, 118, 0.08); border: 1px solid rgba(0, 230, 118, 0.35); border-radius: 8px; padding: 1.8rem; margin-top: 1.5rem;">
+              <div style="font-size: 0.85rem; color: #00e676; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                <span>✓</span> ACCEPTED & VERIFIED ENGINEERING SOLUTION
+              </div>
+              <p style="font-size: 0.98rem; color: #fff; margin: 0; line-height: 1.65;">
+                ${post.solution}
+              </p>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- Replies Section -->
+        <div style="margin-bottom: 3rem;">
+          <h3 style="font-size: 1.25rem; color: #fff; margin-bottom: 1.2rem;">
+            Technical Replies (${replies.length})
+          </h3>
+
+          <div id="thread-replies-list">
+            ${repliesHtml}
+          </div>
+        </div>
+
+        <!-- Reply Submission Form -->
+        <div class="card" style="padding: 2rem;">
+          <h3 style="font-size: 1.15rem; color: #fff; margin-bottom: 1rem;">Post Your Answer / Insight</h3>
+          <form id="form-add-reply" onsubmit="handleAddReply(event, '${post.id}')">
+            <div class="form-group">
+              <label class="form-label">Your Name & Role</label>
+              <input type="text" id="reply-author" class="form-input" placeholder="e.g. Srikant Iyer (Firmware Engineer)" required />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Answer & Technical Evidence</label>
+              <textarea id="reply-content" class="form-input" rows="4" placeholder="Explain the root cause, register configurations, or hardware errata..." required></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary">Post Reply</button>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    function upvoteThread(id) {
+      const store = SiliconData.get();
+      const p = store.posts.find(item => item.id === id);
+      if (p) {
+        p.likes = (p.likes || 0) + 1;
+        SiliconData.save(store);
+        const el = document.getElementById('thread-like-count');
+        if (el) el.textContent = p.likes;
+        showToast('Upvoted!');
+      }
+    }
+
+    function handleAddReply(e, postId) {
+      e.preventDefault();
+      const author = document.getElementById('reply-author').value.trim();
+      const content = document.getElementById('reply-content').value.trim();
+
+      const store = SiliconData.get();
+      const post = store.posts.find(p => p.id === postId);
+      if (!post) return;
+
+      if (!post.replies) post.replies = [];
+      post.replies.push({
+        id: 'rep_' + Date.now(),
+        author: author,
+        time: 'Just now',
+        content: content
+      });
+
+      SiliconData.save(store);
+      showToast('Reply posted to thread!');
+      renderPostThread(postId);
+    }
+  </script>
+</body>
+</html>

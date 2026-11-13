@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opportunities & Hardware Careers — SiliconCraft</title>
+  <meta name="description" content="Embedded Systems, VLSI, Firmware, and Semiconductor internships, fresher openings, and engineering hackathons." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link active">Opportunities</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" id="user-nav-action" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section style="padding: 4.5rem 0 2.5rem; border-bottom: 1px solid var(--border-subtle); background: radial-gradient(circle at 50% 0%, rgba(255, 42, 133, 0.08), transparent 70%);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap;">
+        <div style="max-width: 760px;">
+          <span class="badge badge-pink" style="margin-bottom: 1rem; display: inline-block;">CAREER PIPELINE</span>
+          <h1 style="font-size: clamp(2.2rem, 4vw, 3rem); color: #fff; line-height: 1.15; margin-bottom: 1rem;">
+            Hardware & Silicon Opportunities.
+          </h1>
+          <p style="font-size: 1.1rem; color: var(--text-muted); line-height: 1.6;">
+            Zero generic web dev clutter. Curated firmware engineering internships, ASIC verification fresher roles, and national hardware hackathons.
+          </p>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="openModal('modal-add-opportunity')">
+            + Post an Opportunity
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container" style="padding: 3rem 1.5rem 6rem;">
+    <!-- Filter Buttons -->
+    <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2.5rem;" id="opp-type-filters">
+      <button class="btn btn-primary btn-sm filter-btn" onclick="filterOpportunities('all', this)">All Opportunities</button>
+      <button class="btn btn-outline btn-sm filter-btn" onclick="filterOpportunities('Internship', this)">Internships</button>
+      <button class="btn btn-outline btn-sm filter-btn" onclick="filterOpportunities('Fresher Job', this)">Fresher Jobs</button>
+      <button class="btn btn-outline btn-sm filter-btn" onclick="filterOpportunities('Hackathon', this)">Hackathons</button>
+    </div>
+
+    <!-- Opportunities Grid -->
+    <div id="opportunities-grid" class="grid grid-2" style="gap: 2rem;">
+      <!-- Populated via JavaScript -->
+    </div>
+  </main>
+
+  <!-- Add Opportunity Modal -->
+  <div id="modal-add-opportunity" class="modal-backdrop">
+    <div class="modal" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 style="color: #fff; font-size: 1.25rem;">Post Hardware Opportunity</h3>
+        <button class="modal-close" onclick="closeModal('modal-add-opportunity')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-add-opportunity" onsubmit="handleCreateOpportunity(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Position / Event Title</label>
+              <input type="text" id="opp-title" class="form-input" placeholder="e.g. Graduate Firmware Engineer (STM32/CAN)" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Submitter / HR Email (for verification)</label>
+              <input type="email" id="opp-email" class="form-input" placeholder="e.g. hr@company.com or your.name@domain.com" required />
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Company / Organization</label>
+              <input type="text" id="opp-org" class="form-input" placeholder="e.g. Texas Instruments / NXP" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Type</label>
+              <select id="opp-type" class="form-input">
+                <option value="Internship">Internship</option>
+                <option value="Fresher Job">Fresher Job</option>
+                <option value="Hackathon">Hardware Hackathon</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Location</label>
+              <input type="text" id="opp-location" class="form-input" placeholder="e.g. Bengaluru, India (Hybrid)" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Application Deadline</label>
+              <input type="text" id="opp-deadline" class="form-input" placeholder="e.g. Dec 15, 2026" required />
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Eligibility / Key Requirements</label>
+            <textarea id="opp-eligibility" class="form-input" rows="3" placeholder="e.g. B.Tech ECE/EEE 2026 batch. Strong C programming, microcontrollers, and UART/SPI communication." required></textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Application URL / Portal Link</label>
+            <input type="url" id="opp-link" class="form-input" placeholder="https://careers.company.com/..." required />
+          </div>
+
+          <div style="background: rgba(255, 42, 133, 0.05); border: 1px solid var(--border-pink); border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.5rem; font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+            <strong style="color: var(--neon-pink);">🛡️ Personal Verification:</strong> To eliminate spam and protect students, all opportunity postings are personally verified by our team before being published on the website. We will reach out to the contact email if details need review.
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="btn btn-outline" onclick="closeModal('modal-add-opportunity')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Publish Opportunity</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Circuit Canvas Background -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+
+  <script>
+    let currentFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderOpportunities();
+    });
+
+    function renderOpportunities() {
+      const store = SiliconData.get();
+      const grid = document.getElementById('opportunities-grid');
+      if (!grid) return;
+
+      // Only display approved/published opportunities on public board
+      const isApproved = o => (o.status === 'published' || o.status === 'approved' || !o.status);
+      let list = (store.opportunities || []).filter(isApproved);
+
+      if (currentFilter !== 'all') {
+        list = list.filter(o => (o.type || '').toLowerCase() === currentFilter.toLowerCase());
+      }
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
+            No opportunities found in this category right now.
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = list.map(opp => {
+        let typeBadgeClass = 'badge-pink';
+        if (opp.type === 'Hackathon') typeBadgeClass = 'badge-circuit';
+
+        return `
+          <div class="card card-glow" style="padding: 2.2rem; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                <span class="badge ${typeBadgeClass}">${(opp.type || 'OPPORTUNITY').toUpperCase()}</span>
+                <span style="font-size: 0.82rem; color: var(--text-faint); font-family: var(--font-mono);">
+                  ⏳ Deadline: ${opp.deadline || 'Open'}
+                </span>
+              </div>
+
+              <h3 style="font-size: 1.25rem; color: #fff; margin-bottom: 0.4rem; line-height: 1.35;">
+                ${opp.title}
+              </h3>
+              
+              <div style="font-size: 0.95rem; color: var(--neon-pink); font-weight: 600; margin-bottom: 1.25rem;">
+                🏢 ${opp.org} • <span style="color: var(--text-muted); font-weight: normal;">📍 ${opp.location}</span>
+              </div>
+
+              <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1.1rem; margin-bottom: 1.5rem;">
+                <div style="font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-faint); margin-bottom: 0.35rem;">REQUIREMENTS / ELIGIBILITY:</div>
+                <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; margin: 0;">
+                  ${opp.eligibility || 'Check application link for eligibility.'}
+                </p>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 1.2rem; flex-wrap: wrap; gap: 0.75rem;">
+              <span style="font-size: 0.82rem; color: #00e676; display: flex; align-items: center; gap: 0.4rem;">
+                <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #00e676;"></span>
+                Active Application
+              </span>
+              <a href="${opp.link || '#'}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                Apply Direct ↗
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterOpportunities(type, btn) {
+      currentFilter = type;
+      const buttons = document.querySelectorAll('#opp-type-filters .filter-btn');
+      buttons.forEach(b => {
+        b.className = 'btn btn-outline btn-sm filter-btn';
+      });
+      if (btn) btn.className = 'btn btn-primary btn-sm filter-btn';
+      renderOpportunities();
+    }
+
+    function handleCreateOpportunity(e) {
+      e.preventDefault();
+      const store = SiliconData.get();
+      const title = document.getElementById('opp-title').value.trim();
+      const org = document.getElementById('opp-org').value.trim();
+      const contactEmail = document.getElementById('opp-email').value.trim();
+      const type = document.getElementById('opp-type').value;
+      const location = document.getElementById('opp-location').value.trim();
+      const deadline = document.getElementById('opp-deadline').value.trim();
+      const eligibility = document.getElementById('opp-eligibility').value.trim();
+      const link = document.getElementById('opp-link').value.trim();
+
+      if (!title || !org || !contactEmail) return;
+
+      const newOpp = {
+        id: 'opp_' + Date.now(),
+        title,
+        org,
+        contactEmail,
+        type,
+        location,
+        deadline,
+        eligibility,
+        link,
+        status: 'pending',
+        submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+
+      if (!Array.isArray(store.opportunities)) store.opportunities = [];
+      store.opportunities.unshift(newOpp);
+      SiliconData.save(store);
+
+      document.getElementById('form-add-opportunity').reset();
+      closeModal('modal-add-opportunity');
+      showToast('Opportunity submitted! It will appear once verified by admin.');
+      renderOpportunities();
+    }
+  </script>
+</body>
+</html>

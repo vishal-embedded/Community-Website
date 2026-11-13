@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Access — SiliconCraft</title>
+  <meta name="description" content="Sign in or register for your SiliconCraft engineering profile." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid" style="display: flex; flex-direction: column; min-height: 100vh;">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" id="user-nav-action" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login Main -->
+  <main class="container-narrow" style="padding: 4.5rem 1.5rem; flex: 1; display: flex; align-items: center; justify-content: center;">
+    <div class="card card-glow" style="width: 100%; max-width: 480px; padding: 2.5rem; border-color: var(--border-pink);">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <div class="brand-icon" style="margin: 0 auto 1rem; width: 48px; height: 48px; font-size: 1.5rem;">⚡</div>
+        <h1 style="font-size: 1.8rem; color: #fff; margin-bottom: 0.5rem;">Engineer Access Portal</h1>
+        <p style="color: var(--text-faint); font-size: 0.9rem;">
+          Bookmark projects, join technical discussions, and share hardware builds.
+        </p>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div style="display: flex; border-bottom: 1px solid var(--border-subtle); margin-bottom: 2rem;">
+        <button id="tab-login" class="btn btn-sm" style="flex: 1; border-radius: 0; border: none; border-bottom: 2px solid var(--neon-pink); color: #fff; font-weight: 600;" onclick="switchAuthTab('login')">
+          Sign In
+        </button>
+        <button id="tab-register" class="btn btn-sm" style="flex: 1; border-radius: 0; border: none; border-bottom: 2px solid transparent; color: var(--text-faint);" onclick="switchAuthTab('register')">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="form-login" onsubmit="handleAuthSubmit(event, 'login')">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="login-email" class="form-input" placeholder="engineer@domain.com" value="engineer@siliconcraft.dev" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.75rem;">
+          <label class="form-label">Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="••••••••" value="demo1234" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+          Sign In to Portal →
+        </button>
+      </form>
+
+      <!-- Registration Form -->
+      <form id="form-register" style="display: none;" onsubmit="handleAuthSubmit(event, 'register')">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="reg-name" class="form-input" placeholder="e.g. Rahul Varma" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="reg-email" class="form-input" placeholder="engineer@domain.com" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Core Engineering Focus</label>
+          <select id="reg-domain" class="form-input">
+            <option value="Embedded Systems & Firmware">Embedded Systems & Firmware</option>
+            <option value="Embedded Linux & Kernel">Embedded Linux & Kernel</option>
+            <option value="Automotive Electronics">Automotive Electronics (CAN/AUTOSAR)</option>
+            <option value="VLSI & Digital ASIC">VLSI & Digital ASIC Design</option>
+            <option value="PCB & Hardware Engineering">PCB & Hardware Engineering</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.75rem;">
+          <label class="form-label">Choose Password</label>
+          <input type="password" id="reg-password" class="form-input" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+          Create Engineer Profile →
+        </button>
+      </form>
+
+      <div style="margin-top: 1.5rem; text-align: center;">
+        <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-faint);">
+          ⚡ Local storage session • Zero cloud dependencies
+        </span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Circuit Canvas Background -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+
+  <script>
+    function switchAuthTab(tab) {
+      const loginTab = document.getElementById('tab-login');
+      const regTab = document.getElementById('tab-register');
+      const loginForm = document.getElementById('form-login');
+      const regForm = document.getElementById('form-register');
+
+      if (tab === 'login') {
+        loginTab.style.borderBottomColor = 'var(--neon-pink)';
+        loginTab.style.color = '#fff';
+        loginTab.style.fontWeight = '600';
+        regTab.style.borderBottomColor = 'transparent';
+        regTab.style.color = 'var(--text-faint)';
+        regTab.style.fontWeight = 'normal';
+        loginForm.style.display = 'block';
+        regForm.style.display = 'none';
+      } else {
+        regTab.style.borderBottomColor = 'var(--neon-pink)';
+        regTab.style.color = '#fff';
+        regTab.style.fontWeight = '600';
+        loginTab.style.borderBottomColor = 'transparent';
+        loginTab.style.color = 'var(--text-faint)';
+        loginTab.style.fontWeight = 'normal';
+        loginForm.style.display = 'none';
+        regForm.style.display = 'block';
+      }
+    }
+
+    function handleAuthSubmit(e, action) {
+      e.preventDefault();
+      const store = SiliconData.get();
+      if (!store.currentUser) store.currentUser = {};
+
+      if (action === 'login') {
+        const email = document.getElementById('login-email').value.trim();
+        store.currentUser.email = email;
+        if (!store.currentUser.name || store.currentUser.name === 'Alex Chen') {
+          store.currentUser.name = email.split('@')[0];
+        }
+        SiliconData.save(store);
+        showToast('Signed in successfully!');
+        setTimeout(() => {
+          window.location.href = 'profile.html';
+        }, 600);
+      } else {
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const domain = document.getElementById('reg-domain').value;
+
+        store.currentUser.name = name;
+        store.currentUser.email = email;
+        store.currentUser.domain = domain;
+        SiliconData.save(store);
+
+        showToast('Account registered successfully! Welcome to SiliconCraft.');
+        setTimeout(() => {
+          window.location.href = 'profile.html';
+        }, 600);
+      }
+    }
+  </script>
+</body>
+</html>

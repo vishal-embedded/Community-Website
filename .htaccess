@@ -1,0 +1,12 @@
+# SiliconCraft Apache/cPanel Clean URL Routing
+RewriteEngine On
+RewriteBase /
+
+# Route /arthurmorgan or /arthurmorgan/ to arthurmorgan.html
+RewriteRule ^arthurmorgan/?$ arthurmorgan.html [L,QSA]
+
+# Allow direct file and directory access
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+)$ $1.html [NC,L]
+

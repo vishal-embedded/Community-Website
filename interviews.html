@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Industry Expert Interviews — SiliconCraft</title>
+  <meta name="description" content="In-depth conversations with senior engineers, researchers, and technical leaders from the semiconductor and embedded systems industry." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link active">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" id="user-nav-action" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section style="padding: 4.5rem 0 2.5rem; border-bottom: 1px solid var(--border-subtle); background: radial-gradient(circle at 50% 0%, rgba(255, 42, 133, 0.08), transparent 70%);">
+    <div class="container">
+      <div style="max-width: 820px;">
+        <span class="badge badge-pink" style="margin-bottom: 1rem; display: inline-block;">INDUSTRY PERSPECTIVES</span>
+        <h1 style="font-size: clamp(2.2rem, 4vw, 3rem); color: #fff; line-height: 1.15; margin-bottom: 1rem;">
+          Conversations with Industry Leaders.
+        </h1>
+        <p style="font-size: 1.1rem; color: var(--text-muted); line-height: 1.6;">
+          Real career journeys, hiring expectations, technical breakdowns, and practical guidance directly from senior engineers, researchers, and architects at top semiconductor and hardware firms.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container" style="padding: 3.5rem 1.5rem 6rem;">
+    <!-- Interviews Grid -->
+    <div id="interviews-archive-grid" class="grid grid-2" style="gap: 2rem;">
+      <!-- Populated dynamically via JS -->
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Circuit Canvas Background -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderInterviews();
+    });
+
+    function renderInterviews() {
+      const store = SiliconData.get();
+      const container = document.getElementById('interviews-archive-grid');
+      if (!container) return;
+
+      const list = store.interviews || [];
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
+            No interviews published yet.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        const expertName = item.name || item.expertName || 'Industry Architect';
+        const expertRole = item.role || item.expertRole || 'Senior Engineer';
+        const expertCompany = item.company || item.expertCompany || 'Silicon Industry';
+        const topic = item.topic || 'Engineering Career';
+        const readTime = item.readTime || item.readingTime || '10 min read';
+        const summary = item.summary || item.desc || '';
+
+        return `
+          <div class="card card-glow" style="padding: 2.2rem; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem;">
+                <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(255,42,133,0.12); border: 1px solid var(--border-pink); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #fff; flex-shrink: 0;">
+                  ⚡
+                </div>
+                <div>
+                  <h3 style="font-size: 1.15rem; color: #fff; margin: 0 0 0.2rem; line-height: 1.3;">${expertName}</h3>
+                  <div style="font-size: 0.82rem; color: var(--neon-pink); font-family: var(--font-mono); font-weight: 500;">
+                    ${expertRole} @ <span style="color: #fff;">${expertCompany}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 0.8rem;">
+                <span class="badge badge-pink" style="font-size: 0.72rem;">${topic}</span>
+              </div>
+
+              <h2 style="font-size: 1.3rem; color: #fff; line-height: 1.35; margin-bottom: 0.8rem;">
+                <a href="interview-detail.html?id=${item.id}" style="color: inherit; text-decoration: none;">${item.title}</a>
+              </h2>
+
+              <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+                ${summary}
+              </p>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 1.2rem;">
+              <span style="font-size: 0.8rem; color: var(--text-faint); font-family: var(--font-mono);">${readTime}</span>
+              <a href="interview-detail.html?id=${item.id}" class="btn btn-outline btn-sm">Read Full Interview →</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# Netlify & Cloudflare Pages Redirects
+/arthurmorgan    /arthurmorgan.html    200
+/arthurmorgan/   /arthurmorgan.html    200
+

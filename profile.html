@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engineering Profile — SiliconCraft</title>
+  <meta name="description" content="Your learning profile, bookmarked articles, and hardware projects." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-outline btn-sm" onclick="logoutUser()">Sign Out</button>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Profile Main -->
+  <main class="container" style="padding: 3.5rem 1.5rem 6rem;">
+    <!-- Profile Header Card -->
+    <div class="card card-glow" style="padding: 2.5rem; margin-bottom: 2.5rem; border-color: var(--border-pink);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem;">
+        <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+          <div style="width: 72px; height: 72px; border-radius: 50%; background: var(--neon-pink-dim); border: 2px solid var(--neon-pink); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #fff;">
+            ⚡
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.4rem; flex-wrap: wrap;">
+              <h1 id="profile-name" style="font-size: 1.8rem; color: #fff; margin: 0;">Engineer</h1>
+              <span class="badge badge-pink">COMMUNITY MEMBER</span>
+            </div>
+            <p id="profile-email" style="color: var(--text-faint); font-size: 0.92rem; font-family: var(--font-mono); margin-bottom: 0.4rem;">
+              engineer@siliconcraft.dev
+            </p>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+              Focus: <strong style="color: var(--neon-pink);" id="profile-domain-label">Embedded Systems & Firmware</strong>
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+          <button class="btn btn-outline btn-sm" onclick="openEditModal()">Edit Profile</button>
+          <button class="btn btn-primary btn-sm" onclick="logoutUser()">Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="grid grid-3" style="margin-bottom: 3rem;">
+      <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.2rem; font-weight: 800; color: #fff; font-family: var(--font-mono); margin-bottom: 0.3rem;" id="stat-articles-read">
+          5
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-faint);">Technical Insights Explored</div>
+      </div>
+
+      <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.2rem; font-weight: 800; color: var(--neon-pink); font-family: var(--font-mono); margin-bottom: 0.3rem;" id="stat-bookmarks-count">
+          0
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-faint);">Saved Bookmarks</div>
+      </div>
+
+      <div class="card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.2rem; font-weight: 800; color: #fff; font-family: var(--font-mono); margin-bottom: 0.3rem;" id="stat-discussions-count">
+          3
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-faint);">Community Threads Active</div>
+      </div>
+    </div>
+
+    <!-- Recommended Insights -->
+    <div style="margin-bottom: 3.5rem;">
+      <h2 style="font-size: 1.4rem; color: #fff; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem;">
+        <span style="color: var(--neon-pink);">📖</span> Recommended Technical Guides
+      </h2>
+      <div id="profile-recommended-articles" class="grid grid-3">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Edit Profile Modal -->
+  <div id="modal-edit-profile" class="modal-backdrop">
+    <div class="modal" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 style="color: #fff; font-size: 1.25rem;">Edit Profile</h3>
+        <button class="modal-close" onclick="closeModal('modal-edit-profile')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="saveProfileChanges(event)">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="edit-name" class="form-input" required />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="edit-email" class="form-input" required />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.75rem;">
+            <label class="form-label">Primary Discipline</label>
+            <select id="edit-domain" class="form-input">
+              <option value="Embedded Systems & Firmware">Embedded Systems & Firmware</option>
+              <option value="Embedded Linux & Kernel">Embedded Linux & Kernel</option>
+              <option value="Automotive Electronics">Automotive Electronics (CAN/AUTOSAR)</option>
+              <option value="VLSI & Digital ASIC">VLSI & Digital ASIC Design</option>
+              <option value="PCB & Hardware Engineering">PCB & Hardware Engineering</option>
+            </select>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="btn btn-outline" onclick="closeModal('modal-edit-profile')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Circuit Canvas Background -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProfileData();
+    });
+
+    function loadProfileData() {
+      const store = SiliconData.get();
+      const user = store.currentUser || {};
+
+      document.getElementById('profile-name').textContent = user.name || 'Engineer';
+      document.getElementById('profile-email').textContent = user.email || 'engineer@siliconcraft.dev';
+      document.getElementById('profile-domain-label').textContent = user.domain || 'Embedded Systems & Firmware';
+
+      const bookmarks = user.bookmarks || [];
+      document.getElementById('stat-bookmarks-count').textContent = bookmarks.length;
+
+      const artContainer = document.getElementById('profile-recommended-articles');
+      if (artContainer) {
+        artContainer.innerHTML = (store.articles || []).slice(0, 3).map(art => `
+          <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <span class="badge badge-pink" style="font-size: 0.7rem; margin-bottom: 0.6rem; display: inline-block;">${art.category}</span>
+              <h4 style="color: #fff; font-size: 1.05rem; margin: 0 0 0.5rem; line-height: 1.35;">
+                <a href="insights.html" style="color: inherit; text-decoration: none;">${art.title}</a>
+              </h4>
+              <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; margin: 0 0 1rem;">
+                ${art.desc}
+              </p>
+            </div>
+            <a href="insights.html" class="btn btn-outline btn-sm" style="align-self: flex-start;">Read Guide →</a>
+          </div>
+        `).join('');
+      }
+    }
+
+    function openEditModal() {
+      const store = SiliconData.get();
+      const user = store.currentUser || {};
+      document.getElementById('edit-name').value = user.name || '';
+      document.getElementById('edit-email').value = user.email || '';
+      document.getElementById('edit-domain').value = user.domain || 'Embedded Systems & Firmware';
+      openModal('modal-edit-profile');
+    }
+
+    function saveProfileChanges(e) {
+      e.preventDefault();
+      const store = SiliconData.get();
+      if (!store.currentUser) store.currentUser = {};
+      store.currentUser.name = document.getElementById('edit-name').value.trim();
+      store.currentUser.email = document.getElementById('edit-email').value.trim();
+      store.currentUser.domain = document.getElementById('edit-domain').value;
+      SiliconData.save(store);
+
+      closeModal('modal-edit-profile');
+      showToast('Profile updated!');
+      loadProfileData();
+    }
+
+    function logoutUser() {
+      const store = SiliconData.get();
+      if (store.currentUser) {
+        store.currentUser.email = '';
+      }
+      SiliconData.save(store);
+      showToast('Signed out.');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 500);
+    }
+  </script>
+</body>
+</html>

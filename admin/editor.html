@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article & Guide Editor — SiliconCraft Admin</title>
+  <meta name="description" content="Technical content editor for articles, register guides, and insights." />
+  
+  <script src="../assets/js/admin-guard.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Admin Header -->
+  <header class="site-header" style="border-bottom: 1px solid var(--border-pink);">
+    <div class="container nav-wrap">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span> <span style="font-size: 0.72rem; background: var(--neon-pink); color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; vertical-align: middle; margin-left: 0.4rem; font-family: var(--font-mono);">ADMIN</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="articles.html" class="nav-link active">Articles</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="settings.html" class="nav-link">Settings</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="articles.html" class="btn btn-outline btn-sm">← Back to Articles</a>
+        <button class="btn btn-sm" style="background: rgba(255, 85, 85, 0.15); color: #ff5555; border: 1px solid rgba(255, 85, 85, 0.4);" onclick="logoutAdmin()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Editor Container -->
+  <main class="container" style="padding: 3rem 1.5rem 6rem; max-width: 1000px;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <h1 id="editor-page-title" style="font-size: 2rem; color: #fff; margin-bottom: 0.2rem;">Create Technical Article</h1>
+        <p style="color: var(--text-faint); font-size: 0.9rem;">
+          Format register explanations, code listings, and hardware breakdowns.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.8rem;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="saveArticle('draft')">Save Draft</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="saveArticle('published')">Publish Article →</button>
+      </div>
+    </div>
+
+    <form id="editor-form" onsubmit="event.preventDefault();">
+      <input type="hidden" id="edit-article-id" value="" />
+
+      <div class="card card-glow" style="padding: 2.2rem; margin-bottom: 2rem; border-color: rgba(255, 42, 133, 0.3);">
+        
+        <div class="form-group">
+          <label class="form-label">Article Title</label>
+          <input type="text" id="article-title" class="form-input" style="font-size: 1.25rem; font-weight: 600;" placeholder="e.g. Mastering STM32 UART with DMA and Idle-Line Detection" required />
+        </div>
+
+        <div class="grid grid-3" style="gap: 1.2rem;">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select id="article-category" class="form-input">
+              <option value="Firmware & Low-Level C">Firmware & Low-Level C</option>
+              <option value="Real-Time Systems & RTOS">Real-Time Systems & RTOS</option>
+              <option value="Embedded Linux & BSP">Embedded Linux & BSP</option>
+              <option value="VLSI & ASIC Design">VLSI & ASIC Design</option>
+              <option value="Automotive & CAN FD">Automotive & CAN FD</option>
+              <option value="Hardware & PCB Layout">Hardware & PCB Layout</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Estimated Read Time</label>
+            <input type="text" id="article-read-time" class="form-input" placeholder="e.g. 8 min read" value="7 min read" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Author Name & Role</label>
+            <input type="text" id="article-author" class="form-input" placeholder="e.g. Senior Firmware Architect" value="Editorial Team" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Short Description / Subtitle</label>
+          <textarea id="article-desc" class="form-input" rows="2" placeholder="One or two sentences explaining what the engineer will learn from this article." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tags (comma-separated)</label>
+          <input type="text" id="article-tags" class="form-input" placeholder="e.g. STM32, DMA, UART, C99, BareMetal" />
+        </div>
+
+      </div>
+
+      <!-- Content Area with Markdown/HTML formatting toolbar -->
+      <div class="card" style="padding: 2.2rem;">
+        <label class="form-label" style="margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center;">
+          <span>Technical Content Body (Supports HTML & Markdown)</span>
+          <span style="font-size: 0.8rem; color: var(--text-faint);">Formatting tools below</span>
+        </label>
+
+        <!-- Formatting Toolbar -->
+        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; padding: 0.6rem; background: rgba(255,255,255,0.03); border-radius: 6px; border: 1px solid var(--border-subtle);">
+          <button type="button" class="btn btn-outline btn-sm" onclick="insertSnippet('h2')">H2</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="insertSnippet('h3')">H3</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="insertSnippet('bold')"><b>B</b></button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="insertSnippet('italic')"><i>I</i></button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="insertSnippet('code')">Code Block</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="insertSnippet('quote')">Quote</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="insertSnippet('list')">List</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="insertSnippet('callout')">Pink Alert</button>
+          <button type="button" class="btn btn-outline btn-sm" style="margin-left: auto;" onclick="toggleLivePreview()">Toggle Preview</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" id="editor-preview-container">
+          <textarea id="article-content" class="form-input" rows="18" style="font-family: var(--font-mono); font-size: 0.95rem; line-height: 1.6;" placeholder="Write your technical content here...&#10;&#10;## Section Title&#10;&#10;Explanation of hardware registers, clock configurations, and timing diagrams.&#10;&#10;```c&#10;// C firmware example&#10;void init_usart(void) {&#10;    USART1->CR1 |= USART_CR1_UE;&#10;}&#10;```"></textarea>
+
+          <div id="editor-preview" style="display: none; background: rgba(0,0,0,0.4); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1.5rem; overflow-y: auto; max-height: 450px;">
+            <div style="color: var(--text-faint); font-size: 0.8rem; margin-bottom: 1rem; font-family: var(--font-mono);">LIVE ARTICLE PREVIEW:</div>
+            <div id="preview-render" style="color: var(--text-muted); line-height: 1.7;"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </form>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 SiliconCraft CMS Editor. Zero server dependencies.</span>
+        <span style="color: var(--neon-pink);">Markdown & Raw HTML Enabled</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    function logoutAdmin() {
+      sessionStorage.removeItem('siliconcraft_admin_auth');
+      sessionStorage.removeItem('siliconcraft_admin_time');
+      window.location.href = '../arthurmorgan.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const articleId = urlParams.get('id');
+
+      if (articleId) {
+        const store = SiliconData.get();
+        const art = (store.articles || []).find(a => a.id === articleId);
+        if (art) {
+          document.getElementById('editor-page-title').textContent = 'Edit Technical Article';
+          document.getElementById('edit-article-id').value = art.id;
+          document.getElementById('article-title').value = art.title || '';
+          document.getElementById('article-category').value = art.category || 'Firmware & Low-Level C';
+          document.getElementById('article-read-time').value = art.readTime || '8 min read';
+          document.getElementById('article-author').value = art.author || 'Senior Firmware Architect';
+          document.getElementById('article-desc').value = art.desc || '';
+          document.getElementById('article-tags').value = (art.tags || []).join(', ');
+          document.getElementById('article-content').value = art.content || '';
+        }
+      }
+    });
+
+    function insertSnippet(type) {
+      const textarea = document.getElementById('article-content');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selected = textarea.value.substring(start, end);
+      let insertion = '';
+
+      switch (type) {
+        case 'h2':
+          insertion = `\n## ${selected || 'Heading 2 Title'}\n`;
+          break;
+        case 'h3':
+          insertion = `\n### ${selected || 'Heading 3 Subtitle'}\n`;
+          break;
+        case 'bold':
+          insertion = `**${selected || 'bold text'}**`;
+          break;
+        case 'italic':
+          insertion = `*${selected || 'italic text'}*`;
+          break;
+        case 'code':
+          insertion = `\n\`\`\`c\n${selected || '// Insert C snippet here\nvoid init_hardware() {\n    // Configure registers\n}'}\n\`\`\`\n`;
+          break;
+        case 'quote':
+          insertion = `\n> ${selected || 'Important technical takeaway or datasheet note.'}\n`;
+          break;
+        case 'list':
+          insertion = `\n- Item 1\n- Item 2\n- Item 3\n`;
+          break;
+        case 'callout':
+          insertion = `\n<div class="card" style="border-color: var(--neon-pink); padding: 1.2rem; margin: 1.5rem 0;">\n  <strong style="color: var(--neon-pink);">PRO TIP:</strong> Always verify pull-up resistor values on open-drain I2C lines with an oscilloscope.\n</div>\n`;
+          break;
+      }
+
+      textarea.setRangeText(insertion, start, end, 'end');
+      textarea.focus();
+    }
+
+    function toggleLivePreview() {
+      const previewBox = document.getElementById('editor-preview');
+      const render = document.getElementById('preview-render');
+      const content = document.getElementById('article-content').value;
+
+      if (previewBox.style.display === 'none') {
+        previewBox.style.display = 'block';
+        let html = content
+          .replace(/### (.*)/g, '<h3 style="color:#fff; margin-top:1.2rem;">$1</h3>')
+          .replace(/## (.*)/g, '<h2 style="color:#fff; margin-top:1.5rem; border-bottom:1px solid rgba(255,42,133,0.3); padding-bottom:0.3rem;">$1</h2>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#fff;">$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/```([a-z]*)\n([\s\S]*?)```/g, '<pre style="background:#030406; padding:1rem; border-radius:6px; border:1px solid #222; overflow-x:auto; font-family:monospace; color:#00f0ff;"><code>$2</code></pre>')
+          .replace(/> (.*)/g, '<blockquote style="border-left:3px solid var(--neon-pink); padding-left:1rem; color:#fff; font-style:italic; margin:1rem 0;">$1</blockquote>')
+          .replace(/\n\n/g, '<br><br>');
+        render.innerHTML = html;
+      } else {
+        previewBox.style.display = 'none';
+      }
+    }
+
+    function saveArticle(status) {
+      const title = document.getElementById('article-title').value.trim();
+      const desc = document.getElementById('article-desc').value.trim();
+      const content = document.getElementById('article-content').value.trim();
+
+      if (!title || !content) {
+        alert('Please fill in at least the Title and Content body.');
+        return;
+      }
+
+      const store = SiliconData.get();
+      const existingId = document.getElementById('edit-article-id').value;
+      const tags = document.getElementById('article-tags').value.split(',').map(t => t.trim()).filter(Boolean);
+
+      const articleObj = {
+        id: existingId || ('art_' + Date.now()),
+        title: title,
+        desc: desc,
+        category: document.getElementById('article-category').value,
+        readTime: document.getElementById('article-read-time').value.trim() || '6 min read',
+        author: document.getElementById('article-author').value.trim() || 'Senior Firmware Architect',
+        tags: tags.length ? tags : ['Embedded', 'Hardware'],
+        content: content,
+        status: status,
+        updatedAt: new Date().toISOString()
+      };
+
+      if (existingId) {
+        const idx = store.articles.findIndex(a => a.id === existingId);
+        if (idx !== -1) {
+          store.articles[idx] = articleObj;
+        } else {
+          store.articles.unshift(articleObj);
+        }
+      } else {
+        store.articles.unshift(articleObj);
+      }
+
+      SiliconData.save(store);
+      window.location.href = 'articles.html';
+    }
+  </script>
+</body>
+</html>

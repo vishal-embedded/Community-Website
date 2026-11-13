@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — SiliconCraft</title>
+  <meta name="description" content="Administrative control center for SiliconCraft platform." />
+  
+  <script src="../assets/js/admin-guard.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Admin Header -->
+  <header class="site-header" style="border-bottom: 1px solid var(--border-pink);">
+    <div class="container nav-wrap">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span> <span style="font-size: 0.72rem; background: var(--neon-pink); color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; vertical-align: middle; margin-left: 0.4rem; font-family: var(--font-mono);">ADMIN</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="articles.html" class="nav-link">Articles</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="settings.html" class="nav-link">Settings</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="../index.html" target="_blank" class="btn btn-outline btn-sm">View Public Site ↗</a>
+        <button class="btn btn-sm" style="background: rgba(255, 85, 85, 0.15); color: #ff5555; border: 1px solid rgba(255, 85, 85, 0.4);" onclick="logoutAdmin()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Main -->
+  <main class="container" style="padding: 3rem 1.5rem 6rem;">
+    
+    <!-- Welcome Banner -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem;">
+      <div>
+        <h1 style="font-size: 2.2rem; color: #fff; margin-bottom: 0.3rem;">Platform Control Center</h1>
+        <p style="color: var(--text-faint); font-size: 0.95rem;">
+          Direct content management, applicant email verification, and community moderation.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+        <a href="editor.html" class="btn btn-primary btn-sm">+ New Article</a>
+        <a href="interviews.html" class="btn btn-outline btn-sm">+ Add Interview</a>
+        <a href="opportunities.html" class="btn btn-outline btn-sm">+ Post Opportunity</a>
+      </div>
+    </div>
+
+    <!-- Quick Metrics Grid -->
+    <div class="grid grid-4" style="margin-bottom: 2.5rem;">
+      <div class="card card-glow" style="padding: 1.8rem; border-color: rgba(255, 42, 133, 0.3);">
+        <div style="font-size: 0.82rem; color: var(--text-faint); font-family: var(--font-mono); text-transform: uppercase;">Technical Articles</div>
+        <div id="stat-articles" style="font-size: 2.4rem; font-weight: 700; color: #fff; margin: 0.5rem 0 0.2rem;">0</div>
+        <div style="font-size: 0.82rem; color: var(--neon-pink);"><a href="articles.html" style="color: inherit; text-decoration: none;">Manage articles →</a></div>
+      </div>
+
+      <div class="card card-glow" style="padding: 1.8rem;">
+        <div style="font-size: 0.82rem; color: var(--text-faint); font-family: var(--font-mono); text-transform: uppercase;">Expert Interviews</div>
+        <div id="stat-interviews" style="font-size: 2.4rem; font-weight: 700; color: #fff; margin: 0.5rem 0 0.2rem;">0</div>
+        <div style="font-size: 0.82rem; color: #00f0ff;"><a href="interviews.html" style="color: inherit; text-decoration: none;">Review transcripts →</a></div>
+      </div>
+
+      <div class="card card-glow" style="padding: 1.8rem;">
+        <div style="font-size: 0.82rem; color: var(--text-faint); font-family: var(--font-mono); text-transform: uppercase;">Pending Projects</div>
+        <div id="stat-pending-projects" style="font-size: 2.4rem; font-weight: 700; color: var(--neon-pink); margin: 0.5rem 0 0.2rem;">0</div>
+        <div style="font-size: 0.82rem; color: var(--neon-pink);"><a href="projects.html" style="color: inherit; text-decoration: none;">Review project queue →</a></div>
+      </div>
+
+      <div class="card card-glow" style="padding: 1.8rem;">
+        <div style="font-size: 0.82rem; color: var(--text-faint); font-family: var(--font-mono); text-transform: uppercase;">Pending Opportunities</div>
+        <div id="stat-pending-opps" style="font-size: 2.4rem; font-weight: 700; color: #ffd600; margin: 0.5rem 0 0.2rem;">0</div>
+        <div style="font-size: 0.82rem; color: #ffd600;"><a href="opportunities.html" style="color: inherit; text-decoration: none;">Verify job listings →</a></div>
+      </div>
+    </div>
+
+    <!-- PENDING APPROVALS QUEUE (Prominent Section) -->
+    <div class="card card-glow" style="margin-bottom: 3rem; padding: 2rem; border-color: rgba(255, 42, 133, 0.45); background: linear-gradient(135deg, rgba(255, 42, 133, 0.04), var(--bg-surface));">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.8rem;">
+        <div>
+          <h2 style="font-size: 1.35rem; color: #fff; display: flex; align-items: center; gap: 0.6rem;">
+            <span>🛡️</span> Awaiting Your Verification & Approval
+          </h2>
+          <p style="color: var(--text-faint); font-size: 0.88rem; margin: 0.2rem 0 0;">
+            Submissions require your manual sign-off before appearing live on the public website.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="projects.html" class="btn btn-outline btn-sm">Full Projects Queue →</a>
+          <a href="opportunities.html" class="btn btn-outline btn-sm">Full Opportunities Queue →</a>
+        </div>
+      </div>
+
+      <div id="dashboard-pending-queue">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Quick Operations & Recent Activity -->
+    <div class="grid grid-2" style="gap: 2.5rem; align-items: flex-start;">
+      
+      <!-- Recent Content Overview -->
+      <div class="card" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; color: #fff;">Recent Knowledge Base Articles</h2>
+          <a href="articles.html" style="font-size: 0.82rem; color: var(--neon-pink); text-decoration: none;">View All →</a>
+        </div>
+
+        <div id="dashboard-recent-articles">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Moderation Queue & Community Questions -->
+      <div class="card" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; color: #fff;">Community Discussions</h2>
+          <a href="community.html" style="font-size: 0.82rem; color: var(--neon-pink); text-decoration: none;">Moderate →</a>
+        </div>
+
+        <div id="dashboard-recent-questions">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- System Architecture Banner -->
+    <div class="card" style="margin-top: 3rem; padding: 2rem; background: rgba(14, 17, 24, 0.7); border: 1px dashed var(--border-pink);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+        <div>
+          <h3 style="color: #fff; font-size: 1.15rem; margin-bottom: 0.4rem;">💡 Zero-Maintenance Architecture Status</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">
+            All content edits made here are instantly committed to your local browser store and can be exported as a production-ready JSON seed file with one click.
+          </p>
+        </div>
+        <a href="settings.html" class="btn btn-primary btn-sm">Data Backup & Export →</a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 SiliconCraft Admin Panel. Built for solo maintenance with standard web hosting.</span>
+        <span style="color: var(--neon-pink);">Active Data Layer: LocalStorage Cache Engine</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderDashboard();
+    });
+
+    function renderDashboard() {
+      const store = SiliconData.get();
+
+      const allProjects = store.projects || [];
+      const pendingProjects = allProjects.filter(p => p.status === 'pending');
+
+      const allOpps = store.opportunities || [];
+      const pendingOpps = allOpps.filter(o => o.status === 'pending');
+
+      // Stats
+      document.getElementById('stat-articles').textContent = (store.articles || []).length;
+      document.getElementById('stat-interviews').textContent = (store.interviews || []).length;
+      document.getElementById('stat-pending-projects').textContent = pendingProjects.length;
+      document.getElementById('stat-pending-opps').textContent = pendingOpps.length;
+
+      // Pending Review Queue
+      const queueEl = document.getElementById('dashboard-pending-queue');
+      const totalPending = pendingProjects.length + pendingOpps.length;
+
+      if (totalPending === 0) {
+        queueEl.innerHTML = `
+          <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
+            <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">✓</div>
+            <div style="color: #fff; font-weight: 600; margin-bottom: 0.2rem;">All Submissions Verified</div>
+            <div style="font-size: 0.85rem; color: var(--text-faint);">There are currently zero project or opportunity submissions waiting in the queue.</div>
+          </div>
+        `;
+      } else {
+        const projCards = pendingProjects.map(p => {
+          const email = p.creatorEmail || p.email || 'No email provided';
+          const hasEmail = email && email !== 'No email provided';
+          const mailtoUrl = hasEmail ? `mailto:${email}?subject=${encodeURIComponent('SiliconCraft Project Review: ' + p.title)}` : '#';
+
+          return `
+            <div style="padding: 1.25rem; background: var(--bg-surface); border: 1px solid var(--border-pink); border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div style="max-width: 650px;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                  <span class="badge badge-pink" style="font-size: 0.7rem;">HARDWARE PROJECT</span>
+                  <span style="font-size: 0.82rem; color: #fff; font-weight: 600;">${p.title}</span>
+                </div>
+                <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.2rem;">
+                  By <strong>${p.creator}</strong> • ${hasEmail ? `<a href="${mailtoUrl}" style="color: var(--neon-pink); text-decoration: none;">✉ ${email}</a>` : `<span style="color: var(--text-faint);">No email</span>`}
+                </div>
+                <p style="font-size: 0.84rem; color: var(--text-faint); margin: 0; line-height: 1.4;">
+                  ${p.desc.length > 120 ? p.desc.substring(0, 120) + '...' : p.desc}
+                </p>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                ${hasEmail ? `<a href="${mailtoUrl}" class="btn btn-outline btn-sm" style="font-size: 0.78rem;">✉ Email</a>` : ''}
+                <button class="btn btn-primary btn-sm" onclick="quickAcceptProject('${p.id}')">✓ Accept</button>
+                <button class="btn btn-outline btn-sm" style="color: #ff5555; border-color: rgba(255,85,85,0.4);" onclick="quickRejectProject('${p.id}')">✕ Reject</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        const oppCards = pendingOpps.map(o => {
+          const email = o.contactEmail || o.email || 'No email provided';
+          const hasEmail = email && email !== 'No email provided';
+          const mailtoUrl = hasEmail ? `mailto:${email}?subject=${encodeURIComponent('SiliconCraft Opportunity Verification: ' + o.title)}` : '#';
+
+          return `
+            <div style="padding: 1.25rem; background: var(--bg-surface); border: 1px solid rgba(255, 214, 0, 0.4); border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div style="max-width: 650px;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                  <span class="badge badge-circuit" style="font-size: 0.7rem;">${(o.type || 'CAREER').toUpperCase()}</span>
+                  <span style="font-size: 0.82rem; color: #fff; font-weight: 600;">${o.title} @ ${o.org}</span>
+                </div>
+                <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.2rem;">
+                  Location: ${o.location} • Deadline: ${o.deadline} • ${hasEmail ? `<a href="${mailtoUrl}" style="color: #ffd600; text-decoration: none;">✉ ${email}</a>` : `<span style="color: var(--text-faint);">No email</span>`}
+                </div>
+                <p style="font-size: 0.84rem; color: var(--text-faint); margin: 0; line-height: 1.4;">
+                  ${o.eligibility ? (o.eligibility.length > 120 ? o.eligibility.substring(0, 120) + '...' : o.eligibility) : ''}
+                </p>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                ${hasEmail ? `<a href="${mailtoUrl}" class="btn btn-outline btn-sm" style="font-size: 0.78rem;">✉ Email</a>` : ''}
+                <button class="btn btn-primary btn-sm" onclick="quickAcceptOpp('${o.id}')">✓ Accept</button>
+                <button class="btn btn-outline btn-sm" style="color: #ff5555; border-color: rgba(255,85,85,0.4);" onclick="quickRejectOpp('${o.id}')">✕ Reject</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        queueEl.innerHTML = projCards + oppCards;
+      }
+
+      // Recent articles
+      const artContainer = document.getElementById('dashboard-recent-articles');
+      artContainer.innerHTML = (store.articles || []).slice(0, 3).map(art => `
+        <div style="padding: 1rem 0; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+          <div>
+            <h4 style="color: #fff; font-size: 0.95rem; margin-bottom: 0.2rem;">${art.title}</h4>
+            <div style="font-size: 0.8rem; color: var(--text-faint);">
+              <span>${art.category}</span> • <span>${art.readTime}</span> • <span style="color: #00e676;">Published</span>
+            </div>
+          </div>
+          <a href="editor.html?id=${art.id}" class="btn btn-outline btn-sm">Edit</a>
+        </div>
+      `).join('');
+
+      // Recent community questions
+      const postContainer = document.getElementById('dashboard-recent-questions');
+      postContainer.innerHTML = (store.posts || []).slice(0, 3).map(p => `
+        <div style="padding: 1rem 0; border-bottom: 1px solid var(--border-subtle);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.3rem;">
+            <span class="badge ${p.solution ? 'badge-circuit' : 'badge-pink'}" style="font-size: 0.72rem;">
+              ${p.solution ? 'SOLVED' : (p.type || 'QUESTION').toUpperCase()}
+            </span>
+            <span style="font-size: 0.78rem; color: var(--text-faint);">${p.time || 'Recent'}</span>
+          </div>
+          <h4 style="color: #fff; font-size: 0.92rem; margin-bottom: 0.2rem; line-height: 1.4;">
+            <a href="../post-detail.html?id=${p.id}" target="_blank" style="color: inherit; text-decoration: none;">${p.title}</a>
+          </h4>
+          <div style="font-size: 0.78rem; color: var(--text-faint);">By ${p.author}</div>
+        </div>
+      `).join('');
+    }
+
+    function quickAcceptProject(id) {
+      const store = SiliconData.get();
+      const proj = (store.projects || []).find(p => p.id === id);
+      if (!proj) return;
+      proj.status = 'approved';
+      SiliconData.save(store);
+      renderDashboard();
+    }
+
+    function quickRejectProject(id) {
+      if (confirm('Reject this project application?')) {
+        const store = SiliconData.get();
+        store.projects = (store.projects || []).filter(p => p.id !== id);
+        SiliconData.save(store);
+        renderDashboard();
+      }
+    }
+
+    function quickAcceptOpp(id) {
+      const store = SiliconData.get();
+      const opp = (store.opportunities || []).find(o => o.id === id);
+      if (!opp) return;
+      opp.status = 'approved';
+      SiliconData.save(store);
+      renderDashboard();
+    }
+
+    function quickRejectOpp(id) {
+      if (confirm('Reject this opportunity posting?')) {
+        const store = SiliconData.get();
+        store.opportunities = (store.opportunities || []).filter(o => o.id !== id);
+        SiliconData.save(store);
+        renderDashboard();
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Submissions & Moderation — SiliconCraft Admin</title>
+  <meta name="description" content="Review, curate, verify, and moderate hardware projects and open schematics." />
+  
+  <script src="../assets/js/admin-guard.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Admin Header -->
+  <header class="site-header" style="border-bottom: 1px solid var(--border-pink);">
+    <div class="container nav-wrap">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span> <span style="font-size: 0.72rem; background: var(--neon-pink); color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; vertical-align: middle; margin-left: 0.4rem; font-family: var(--font-mono);">ADMIN</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="articles.html" class="nav-link">Articles</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link active">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="settings.html" class="nav-link">Settings</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="../projects.html" target="_blank" class="btn btn-outline btn-sm">View Public Gallery ↗</a>
+        <button class="btn btn-sm" style="background: rgba(255, 85, 85, 0.15); color: #ff5555; border: 1px solid rgba(255, 85, 85, 0.4);" onclick="logoutAdmin()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 3rem 1.5rem 6rem;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 2.2rem; color: #fff; margin-bottom: 0.3rem;">Hardware Project Moderation</h1>
+        <p style="color: var(--text-faint); font-size: 0.95rem;">
+          Review incoming student & engineer build submissions, verify schematics, or email applicants for corrections before publishing.
+        </p>
+      </div>
+
+      <button class="btn btn-primary btn-sm" onclick="openAddProjectModal()">+ Add Verified Build</button>
+    </div>
+
+    <!-- Review Queue Tabs -->
+    <div style="display: flex; gap: 0.75rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 2.5rem; flex-wrap: wrap;">
+      <button id="tab-pending" class="btn btn-sm" style="border-radius: 0; border: none; border-bottom: 2px solid var(--neon-pink); color: #fff; font-weight: 600; padding: 0.75rem 1.25rem;" onclick="switchProjectTab('pending')">
+        Pending Approvals <span id="badge-pending-count" class="badge badge-pink" style="margin-left: 0.4rem; font-size: 0.72rem;">0</span>
+      </button>
+      <button id="tab-live" class="btn btn-sm" style="border-radius: 0; border: none; border-bottom: 2px solid transparent; color: var(--text-faint); padding: 0.75rem 1.25rem;" onclick="switchProjectTab('live')">
+        Live Showcase <span id="badge-live-count" class="badge badge-circuit" style="margin-left: 0.4rem; font-size: 0.72rem;">0</span>
+      </button>
+    </div>
+
+    <!-- Projects Grid -->
+    <div id="admin-projects-grid" class="grid grid-2" style="gap: 2rem;">
+      <!-- Populated by JS -->
+    </div>
+
+  </main>
+
+  <!-- Add Project Modal -->
+  <div id="modal-project" class="modal-backdrop">
+    <div class="modal" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 style="font-size: 1.3rem; color: #fff;">Add Verified Hardware Showcase Build</h3>
+        <button class="modal-close" onclick="closeModal('modal-project')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-project" onsubmit="handleSaveProject(event)">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Project Title</label>
+            <input type="text" id="proj-title" class="form-input" placeholder="e.g. Dual-Node CAN FD Logger on STM32G4" required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Creator / Team</label>
+              <input type="text" id="proj-creator" class="form-input" placeholder="e.g. Arjun Mehta (IIT Madras)" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Creator Contact Email</label>
+              <input type="email" id="proj-email" class="form-input" placeholder="e.g. arjun@domain.com" />
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Domain</label>
+              <select id="proj-domain" class="form-input">
+                <option value="Embedded Systems">Embedded Systems</option>
+                <option value="Automotive Electronics">Automotive Electronics</option>
+                <option value="Embedded Linux">Embedded Linux</option>
+                <option value="VLSI & FPGA">VLSI & FPGA</option>
+                <option value="Hardware / PCB">Hardware & PCB</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">GitHub / Git Repository</label>
+              <input type="url" id="proj-github" class="form-input" placeholder="https://github.com/..." />
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Short Description</label>
+            <textarea id="proj-desc" class="form-input" rows="2" placeholder="Brief technical summary..." required></textarea>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Tech Stack (comma-separated)</label>
+            <input type="text" id="proj-tech" class="form-input" placeholder="e.g. STM32, CAN FD, FreeRTOS, KiCad, C99" required />
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+            <button type="button" class="btn btn-outline" onclick="closeModal('modal-project')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Publish to Live Showcase</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 SiliconCraft Admin Panel. Standard Multi-Page Static Architecture.</span>
+        <span style="color: var(--neon-pink);">Standard Shared Hosting Ready</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    let activeTab = 'pending';
+
+    function openModal(id) {
+      document.getElementById(id)?.classList.add('active');
+    }
+    function closeModal(id) {
+      document.getElementById(id)?.classList.remove('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProjects();
+    });
+
+    function switchProjectTab(tab) {
+      activeTab = tab;
+      const tabPending = document.getElementById('tab-pending');
+      const tabLive = document.getElementById('tab-live');
+
+      if (tab === 'pending') {
+        tabPending.style.borderBottomColor = 'var(--neon-pink)';
+        tabPending.style.color = '#fff';
+        tabPending.style.fontWeight = '600';
+        tabLive.style.borderBottomColor = 'transparent';
+        tabLive.style.color = 'var(--text-faint)';
+        tabLive.style.fontWeight = 'normal';
+      } else {
+        tabLive.style.borderBottomColor = 'var(--neon-pink)';
+        tabLive.style.color = '#fff';
+        tabLive.style.fontWeight = '600';
+        tabPending.style.borderBottomColor = 'transparent';
+        tabPending.style.color = 'var(--text-faint)';
+        tabPending.style.fontWeight = 'normal';
+      }
+      renderProjects();
+    }
+
+    function renderProjects() {
+      const store = SiliconData.get();
+      const allProjects = store.projects || [];
+      const grid = document.getElementById('admin-projects-grid');
+
+      const pendingProjects = allProjects.filter(p => p.status === 'pending');
+      const liveProjects = allProjects.filter(p => p.status === 'approved' || p.status === 'published' || !p.status);
+
+      // Update counters
+      const badgePending = document.getElementById('badge-pending-count');
+      const badgeLive = document.getElementById('badge-live-count');
+      if (badgePending) badgePending.textContent = pendingProjects.length;
+      if (badgeLive) badgeLive.textContent = liveProjects.length;
+
+      const list = activeTab === 'pending' ? pendingProjects : liveProjects;
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; background: var(--bg-surface); border-radius: 12px; border: 1px dashed var(--border-subtle);">
+            <div style="font-size: 2rem; margin-bottom: 0.8rem;">${activeTab === 'pending' ? '🎉' : '📦'}</div>
+            <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.4rem;">
+              ${activeTab === 'pending' ? 'No Pending Project Applications' : 'No Live Projects'}
+            </h3>
+            <p style="color: var(--text-faint); font-size: 0.9rem; margin: 0;">
+              ${activeTab === 'pending' ? 'All submitted hardware builds have been processed and reviewed.' : 'Click "+ Add Verified Build" to publish one directly.'}
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = list.map(p => {
+        const creatorEmail = p.creatorEmail || p.email || 'No email provided';
+        const hasEmail = creatorEmail && creatorEmail !== 'No email provided';
+        const isPending = p.status === 'pending';
+        const mailtoUrl = hasEmail ? `mailto:${creatorEmail}?subject=${encodeURIComponent('SiliconCraft Project Review: ' + (p.title || 'Submission'))}&body=${encodeURIComponent('Hi ' + (p.creator || 'Engineer') + ',\n\nThank you for submitting your hardware project to SiliconCraft!\n\nWe reviewed your project details and wanted to request the following adjustments before publishing:\n\n[Please enter details here]\n\nBest regards,\nSiliconCraft Moderation Team')}` : '#';
+
+        return `
+          <div class="card card-glow" style="padding: 2.2rem; display: flex; flex-direction: column; justify-content: space-between; border-color: ${isPending ? 'rgba(255, 42, 133, 0.45)' : 'var(--border-subtle)'}; background: ${isPending ? 'linear-gradient(135deg, rgba(255, 42, 133, 0.04), var(--bg-surface))' : 'var(--bg-surface)'};">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; gap: 0.5rem; flex-wrap: wrap;">
+                <span class="badge ${isPending ? 'badge-pink' : 'badge-circuit'}">
+                  ${isPending ? '⏳ AWAITING YOUR VERIFICATION' : '✓ LIVE ON PUBLIC SHOWCASE'}
+                </span>
+                <span style="font-size: 0.78rem; color: var(--text-faint); font-family: var(--font-mono);">
+                  ${p.submittedAt || p.time || 'Recent build'}
+                </span>
+              </div>
+
+              <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 0.6rem; line-height: 1.35;">${p.title}</h3>
+
+              <!-- Creator & Contact Box -->
+              <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+                <div style="font-size: 0.88rem; color: #fff; margin-bottom: 0.35rem;">
+                  Creator: <strong>${p.creator}</strong>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                  <div style="font-size: 0.82rem; font-family: var(--font-mono); color: var(--neon-pink);">
+                    ${hasEmail ? `<a href="${mailtoUrl}" style="color: inherit; text-decoration: none;">✉ ${creatorEmail}</a>` : `<span style="color: var(--text-faint);">✉ ${creatorEmail}</span>`}
+                  </div>
+                  ${hasEmail ? `
+                    <button class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="copyToClipboard('${creatorEmail}')">
+                      Copy Email
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+
+              <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.2rem;">
+                ${p.desc}
+              </p>
+
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.2rem;">
+                ${(p.tags || p.tech || []).map(t => `<span class="badge badge-circuit" style="font-size: 0.7rem;">${t}</span>`).join('')}
+              </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.2rem; display: flex; flex-direction: column; gap: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                ${p.github ? `<a href="${p.github}" target="_blank" class="btn btn-outline btn-sm" style="font-size: 0.78rem;">View GitHub Repo ↗</a>` : `<span style="font-size: 0.8rem; color: var(--text-faint);">No repo provided</span>`}
+                
+                ${hasEmail ? `<a href="${mailtoUrl}" class="btn btn-outline btn-sm" style="font-size: 0.78rem; color: var(--neon-pink); border-color: var(--border-pink);">✉ Email Creator</a>` : ''}
+              </div>
+
+              <!-- Moderation Decision Buttons -->
+              <div style="display: flex; gap: 0.6rem; margin-top: 0.3rem;">
+                ${isPending ? `
+                  <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="acceptProject('${p.id}')">
+                    ✓ Accept & Publish Live
+                  </button>
+                  <button class="btn btn-outline btn-sm" style="color: #ff5555; border-color: rgba(255,85,85,0.4);" onclick="rejectProject('${p.id}')">
+                    ✕ Reject
+                  </button>
+                ` : `
+                  <a href="../project-detail.html?id=${p.id}" target="_blank" class="btn btn-outline btn-sm" style="flex: 1;">
+                    View Live Page ↗
+                  </a>
+                  <button class="btn btn-outline btn-sm" style="color: #ff5555; border-color: rgba(255,85,85,0.4);" onclick="deleteProject('${p.id}')">
+                    Delete / Unpublish
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function acceptProject(id) {
+      const store = SiliconData.get();
+      const proj = (store.projects || []).find(p => p.id === id);
+      if (!proj) return;
+
+      proj.status = 'approved';
+      proj.time = 'Verified Showcase';
+      SiliconData.save(store);
+
+      showToast(`Accepted "${proj.title}"! It is now live on the public showcase.`);
+      renderProjects();
+    }
+
+    function rejectProject(id) {
+      if (confirm('Are you sure you want to reject this project application?')) {
+        const store = SiliconData.get();
+        store.projects = (store.projects || []).filter(p => p.id !== id);
+        SiliconData.save(store);
+
+        showToast('Project application rejected and removed.');
+        renderProjects();
+      }
+    }
+
+    function deleteProject(id) {
+      if (confirm('Are you sure you want to remove this project from the showcase?')) {
+        const store = SiliconData.get();
+        store.projects = (store.projects || []).filter(p => p.id !== id);
+        SiliconData.save(store);
+
+        showToast('Project deleted.');
+        renderProjects();
+      }
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Email address copied to clipboard!');
+      }).catch(() => {
+        showToast('Email: ' + text);
+      });
+    }
+
+    function openAddProjectModal() {
+      document.getElementById('form-project').reset();
+      openModal('modal-project');
+    }
+
+    function handleSaveProject(e) {
+      e.preventDefault();
+      const store = SiliconData.get();
+      const tech = document.getElementById('proj-tech').value.split(',').map(t => t.trim()).filter(Boolean);
+
+      const newProj = {
+        id: 'proj_' + Date.now(),
+        title: document.getElementById('proj-title').value.trim(),
+        creator: document.getElementById('proj-creator').value.trim(),
+        creatorEmail: document.getElementById('proj-email').value.trim(),
+        domain: document.getElementById('proj-domain').value,
+        desc: document.getElementById('proj-desc').value.trim(),
+        github: document.getElementById('proj-github').value.trim(),
+        tech: tech.length ? tech : ['STM32', 'C'],
+        tags: tech.length ? tech : ['STM32', 'C'],
+        likes: 12,
+        status: 'approved',
+        time: 'Verified Showcase',
+        submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+
+      if (!Array.isArray(store.projects)) store.projects = [];
+      store.projects.unshift(newProj);
+      SiliconData.save(store);
+
+      closeModal('modal-project');
+      showToast('Verified project published directly to live showcase!');
+      activeTab = 'live';
+      switchProjectTab('live');
+    }
+
+    // Helper toast for admin
+    function showToast(message) {
+      let toast = document.getElementById('admin-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'admin-toast';
+        toast.style.cssText = `
+          position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+          background: #1b1f30; color: #fff; border: 1px solid var(--neon-pink);
+          border-radius: 8px; padding: 0.75rem 1.25rem; font-size: 0.85rem;
+          font-family: var(--font-mono); box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+          transition: all 0.3s ease; opacity: 0; transform: translateY(10px);
+        `;
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<span style="color: var(--neon-pink);">⚡</span> ${message}`;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

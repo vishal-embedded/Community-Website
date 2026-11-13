@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Settings & Security — SiliconCraft Admin</title>
+  <meta name="description" content="Backup, export, import, and configure SiliconCraft platform security." />
+  
+  <script src="../assets/js/admin-guard.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Admin Header -->
+  <header class="site-header" style="border-bottom: 1px solid var(--border-pink);">
+    <div class="container nav-wrap">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span> <span style="font-size: 0.72rem; background: var(--neon-pink); color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; vertical-align: middle; margin-left: 0.4rem; font-family: var(--font-mono);">ADMIN</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="articles.html" class="nav-link">Articles</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="settings.html" class="nav-link active">Settings</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="../index.html" target="_blank" class="btn btn-outline btn-sm">View Public Site ↗</a>
+        <button class="btn btn-sm" style="background: rgba(255, 85, 85, 0.15); color: #ff5555; border: 1px solid rgba(255, 85, 85, 0.4);" onclick="logoutAdmin()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container-narrow" style="padding: 3rem 1.5rem 6rem;">
+    
+    <div style="margin-bottom: 2.5rem;">
+      <h1 style="font-size: 2.2rem; color: #fff; margin-bottom: 0.3rem;">System Settings & Security</h1>
+      <p style="color: var(--text-faint); font-size: 0.95rem;">
+        Admin credentials, data backups, and zero-maintenance static hosting tools.
+      </p>
+    </div>
+
+    <!-- Admin Access Security -->
+    <div class="card card-glow" style="padding: 2.2rem; margin-bottom: 2rem; border-color: rgba(255, 42, 133, 0.3);">
+      <h2 style="color: #fff; font-size: 1.3rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem;">
+        <span>🔐</span> Admin Master Password
+      </h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.5rem;">
+        Change the master administrative password required to access <code>/admin/</code>.
+      </p>
+
+      <form id="form-change-password" onsubmit="handleChangePassword(event)" style="max-width: 440px;">
+        <div class="form-group">
+          <label class="form-label">New Admin Password</label>
+          <input type="password" id="new-admin-pass" class="form-input" placeholder="Enter new strong password" required minlength="6" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" id="confirm-admin-pass" class="form-input" placeholder="Repeat new password" required minlength="6" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">
+          Update Admin Password
+        </button>
+        <span id="pass-success" style="display: none; color: #00e676; font-size: 0.85rem; margin-left: 1rem;">Password updated!</span>
+      </form>
+    </div>
+
+    <!-- Data Backup & Export -->
+    <div class="card" style="padding: 2.2rem; margin-bottom: 2rem;">
+      <h2 style="color: #fff; font-size: 1.3rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem;">
+        <span>📦</span> Export Platform Snapshot
+      </h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.5rem;">
+        Download the full database state (all articles, interviews, community posts, projects, and opportunities) as a single standalone JSON file.
+      </p>
+
+      <button class="btn btn-outline btn-sm" onclick="exportDataJSON()">
+        <span>⬇️ Download siliconcraft_backup.json</span>
+      </button>
+    </div>
+
+    <!-- Data Import / Restore -->
+    <div class="card" style="padding: 2.2rem; margin-bottom: 2rem;">
+      <h2 style="color: #fff; font-size: 1.3rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem;">
+        <span>📤</span> Import Platform Data
+      </h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.5rem;">
+        Load an exported JSON file into this browser's active database layer.
+      </p>
+
+      <input type="file" id="import-file" accept=".json" style="display: none;" onchange="handleImportFile(event)" />
+      <button class="btn btn-outline btn-sm" onclick="document.getElementById('import-file').click()">
+        <span>Select JSON File to Restore...</span>
+      </button>
+    </div>
+
+    <!-- Factory Reset -->
+    <div class="card" style="padding: 2.2rem; border-color: rgba(255, 85, 85, 0.4);">
+      <h2 style="color: #ff5555; font-size: 1.3rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem;">
+        <span>⚠️</span> Reset to Factory Default Data
+      </h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.5rem;">
+        Wipe all custom articles, test submissions, and comments, resetting the data store to the original seed data.
+      </p>
+
+      <button class="btn btn-outline btn-sm" style="color: #ff5555; border-color: rgba(255,85,85,0.5);" onclick="resetFactoryData()">
+        Reset Store to Clean Seed Data
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 SiliconCraft Admin Panel. Standard Multi-Page Static Architecture.</span>
+        <span style="color: var(--neon-pink);">Standard Shared Hosting Ready</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    function logoutAdmin() {
+      sessionStorage.removeItem('siliconcraft_admin_auth');
+      sessionStorage.removeItem('siliconcraft_admin_time');
+      window.location.href = '../arthurmorgan.html';
+    }
+
+    function handleChangePassword(e) {
+      e.preventDefault();
+      const p1 = document.getElementById('new-admin-pass').value;
+      const p2 = document.getElementById('confirm-admin-pass').value;
+
+      if (p1 !== p2) {
+        alert('Passwords do not match.');
+        return;
+      }
+
+      localStorage.setItem('siliconcraft_admin_key', p1);
+      const successEl = document.getElementById('pass-success');
+      successEl.style.display = 'inline';
+      document.getElementById('form-change-password').reset();
+      setTimeout(() => { successEl.style.display = 'none'; }, 3000);
+    }
+
+    function exportDataJSON() {
+      const data = SiliconData.get();
+      const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", str);
+      downloadAnchor.setAttribute("download", `siliconcraft_backup_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function handleImportFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && parsed.articles) {
+            SiliconData.save(parsed);
+            alert('Data restored successfully!');
+            window.location.reload();
+          } else {
+            alert('Invalid backup file format.');
+          }
+        } catch (err) {
+          alert('Failed to parse JSON file: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetFactoryData() {
+      if (confirm('Are you sure you want to restore the platform to its default seed data? All custom additions will be cleared.')) {
+        SiliconData.reset();
+        alert('Platform reset to factory seed data.');
+        window.location.reload();
+      }
+    }
+  </script>
+</body>
+</html>

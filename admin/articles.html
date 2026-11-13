@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article Management — SiliconCraft Admin</title>
+  <meta name="description" content="Manage, draft, publish, and delete technical articles." />
+  
+  <script src="../assets/js/admin-guard.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Admin Header -->
+  <header class="site-header" style="border-bottom: 1px solid var(--border-pink);">
+    <div class="container nav-wrap">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span> <span style="font-size: 0.72rem; background: var(--neon-pink); color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; vertical-align: middle; margin-left: 0.4rem; font-family: var(--font-mono);">ADMIN</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="articles.html" class="nav-link active">Articles</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="settings.html" class="nav-link">Settings</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="../index.html" target="_blank" class="btn btn-outline btn-sm">View Public Site ↗</a>
+        <button class="btn btn-sm" style="background: rgba(255, 85, 85, 0.15); color: #ff5555; border: 1px solid rgba(255, 85, 85, 0.4);" onclick="logoutAdmin()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Main -->
+  <main class="container" style="padding: 3rem 1.5rem 6rem;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem;">
+      <div>
+        <h1 style="font-size: 2.2rem; color: #fff; margin-bottom: 0.3rem;">Knowledge Base Articles</h1>
+        <p style="color: var(--text-faint); font-size: 0.95rem;">
+          Publish in-depth technical guides, register-level tutorials, and industry insights.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.8rem; align-items: center;">
+        <input type="text" id="article-search" class="form-input" style="max-width: 250px;" placeholder="Search articles..." oninput="filterArticles(this.value)" />
+        <a href="editor.html" class="btn btn-primary btn-sm">+ Write New Article</a>
+      </div>
+    </div>
+
+    <!-- Articles Table Card -->
+    <div class="card" style="padding: 1.5rem; overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem;">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--border-pink); color: var(--text-faint); font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase;">
+            <th style="padding: 1rem 0.8rem;">Title & Summary</th>
+            <th style="padding: 1rem 0.8rem;">Category</th>
+            <th style="padding: 1rem 0.8rem;">Author</th>
+            <th style="padding: 1rem 0.8rem;">Status</th>
+            <th style="padding: 1rem 0.8rem; text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="articles-table-body">
+          <!-- Rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 SiliconCraft Admin Panel. Standard Multi-Page Static Architecture.</span>
+        <span style="color: var(--neon-pink);">Instant In-Browser Local Commit</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    function logoutAdmin() {
+      sessionStorage.removeItem('siliconcraft_admin_auth');
+      sessionStorage.removeItem('siliconcraft_admin_time');
+      window.location.href = '../arthurmorgan.html';
+    }
+
+    let cachedArticles = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadArticles();
+    });
+
+    function loadArticles() {
+      const store = SiliconData.get();
+      cachedArticles = store.articles || [];
+      renderTable(cachedArticles);
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('articles-table-body');
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-faint);">
+              No articles found. Click "+ Write New Article" to compose one.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = list.map(art => `
+        <tr style="border-bottom: 1px solid var(--border-subtle);">
+          <td style="padding: 1.2rem 0.8rem; max-width: 400px;">
+            <div style="font-weight: 600; color: #fff; font-size: 1rem; margin-bottom: 0.3rem;">${art.title}</div>
+            <div style="color: var(--text-faint); font-size: 0.82rem; line-height: 1.4;">${art.desc}</div>
+          </td>
+          <td style="padding: 1.2rem 0.8rem;">
+            <span class="badge badge-pink" style="font-size: 0.75rem;">${art.category}</span>
+          </td>
+          <td style="padding: 1.2rem 0.8rem; color: var(--text-muted); font-size: 0.88rem;">
+            ${art.author || 'Admin Staff'}
+          </td>
+          <td style="padding: 1.2rem 0.8rem;">
+            <button onclick="togglePublishStatus('${art.id}')" style="background: none; border: none; cursor: pointer; padding: 0;">
+              <span class="badge ${art.status === 'draft' ? 'badge-circuit' : 'badge-pink'}" style="font-size: 0.75rem; cursor: pointer;">
+                ${art.status === 'draft' ? '📝 DRAFT' : '🟢 PUBLISHED'}
+              </span>
+            </button>
+          </td>
+          <td style="padding: 1.2rem 0.8rem; text-align: right;">
+            <div style="display: inline-flex; gap: 0.5rem;">
+              <a href="editor.html?id=${art.id}" class="btn btn-outline btn-sm">Edit</a>
+              <button class="btn btn-outline btn-sm" style="color: #ff5555; border-color: rgba(255,85,85,0.4);" onclick="deleteArticle('${art.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterArticles(q) {
+      const query = q.toLowerCase().trim();
+      const filtered = cachedArticles.filter(a => 
+        a.title.toLowerCase().includes(query) ||
+        a.category.toLowerCase().includes(query) ||
+        (a.desc && a.desc.toLowerCase().includes(query))
+      );
+      renderTable(filtered);
+    }
+
+    function togglePublishStatus(id) {
+      const store = SiliconData.get();
+      const art = store.articles.find(a => a.id === id);
+      if (art) {
+        art.status = art.status === 'draft' ? 'published' : 'draft';
+        SiliconData.save(store);
+        loadArticles();
+      }
+    }
+
+    function deleteArticle(id) {
+      if (confirm('Are you sure you want to delete this article?')) {
+        const store = SiliconData.get();
+        store.articles = store.articles.filter(a => a.id !== id);
+        SiliconData.save(store);
+        loadArticles();
+      }
+    }
+  </script>
+</body>
+</html>

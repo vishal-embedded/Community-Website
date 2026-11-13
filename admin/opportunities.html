@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Opportunity Postings & Verification — SiliconCraft Admin</title>
+  <meta name="description" content="Review, verify, personally approve, and moderate semiconductor and firmware internships, fresher jobs, and hackathons." />
+  
+  <script src="../assets/js/admin-guard.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Admin Header -->
+  <header class="site-header" style="border-bottom: 1px solid var(--border-pink);">
+    <div class="container nav-wrap">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span> <span style="font-size: 0.72rem; background: var(--neon-pink); color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; vertical-align: middle; margin-left: 0.4rem; font-family: var(--font-mono);">ADMIN</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="articles.html" class="nav-link">Articles</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link active">Opportunities</a>
+        <a href="settings.html" class="nav-link">Settings</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="../opportunities.html" target="_blank" class="btn btn-outline btn-sm">View Public Board ↗</a>
+        <button class="btn btn-sm" style="background: rgba(255, 85, 85, 0.15); color: #ff5555; border: 1px solid rgba(255, 85, 85, 0.4);" onclick="logoutAdmin()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 3rem 1.5rem 6rem;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 2.2rem; color: #fff; margin-bottom: 0.3rem;">Career & Opportunity Verification</h1>
+        <p style="color: var(--text-faint); font-size: 0.95rem;">
+          Personally verify and approve genuine internship drives, fresher roles, and hardware hackathons before they appear on the public board.
+        </p>
+      </div>
+
+      <button class="btn btn-primary btn-sm" onclick="openAddOppModal()">+ Post Verified Listing</button>
+    </div>
+
+    <!-- Review Queue Tabs -->
+    <div style="display: flex; gap: 0.75rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 2.5rem; flex-wrap: wrap;">
+      <button id="tab-opp-pending" class="btn btn-sm" style="border-radius: 0; border: none; border-bottom: 2px solid var(--neon-pink); color: #fff; font-weight: 600; padding: 0.75rem 1.25rem;" onclick="switchOppTab('pending')">
+        Pending Verification <span id="badge-pending-opps" class="badge badge-pink" style="margin-left: 0.4rem; font-size: 0.72rem;">0</span>
+      </button>
+      <button id="tab-opp-live" class="btn btn-sm" style="border-radius: 0; border: none; border-bottom: 2px solid transparent; color: var(--text-faint); padding: 0.75rem 1.25rem;" onclick="switchOppTab('live')">
+        Live Board <span id="badge-live-opps" class="badge badge-circuit" style="margin-left: 0.4rem; font-size: 0.72rem;">0</span>
+      </button>
+    </div>
+
+    <!-- Opportunities Container -->
+    <div id="admin-opps-container">
+      <!-- Rendered dynamically by JS -->
+    </div>
+
+  </main>
+
+  <!-- Add Opportunity Modal -->
+  <div id="modal-opp" class="modal-backdrop">
+    <div class="modal-content" style="max-width: 640px;">
+      <button class="modal-close" onclick="closeModal('modal-opp')">×</button>
+      <h3 style="font-size: 1.3rem; color: #fff; margin-bottom: 1.2rem;">Post Verified Career Opportunity</h3>
+
+      <form id="form-opp" onsubmit="handleSaveOpp(event)">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Title / Role</label>
+          <input type="text" id="opp-admin-title" class="form-input" placeholder="e.g. Firmware Engineering Intern" required />
+        </div>
+
+        <div class="grid grid-2" style="gap: 1rem; margin-bottom: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label">Company / Organizer</label>
+            <input type="text" id="opp-admin-org" class="form-input" placeholder="e.g. Texas Instruments" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Submitter / HR Email</label>
+            <input type="email" id="opp-admin-email" class="form-input" placeholder="e.g. hr@ti.com" />
+          </div>
+        </div>
+
+        <div class="grid grid-2" style="gap: 1rem; margin-bottom: 1.25rem;">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select id="opp-admin-type" class="form-input">
+              <option value="Internship">Internship</option>
+              <option value="Fresher Job">Fresher Job</option>
+              <option value="Hackathon">Hardware Hackathon</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" id="opp-admin-loc" class="form-input" placeholder="e.g. Bengaluru / Hybrid" required />
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Application Deadline</label>
+          <input type="text" id="opp-admin-date" class="form-input" placeholder="e.g. Dec 30, 2026" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Eligibility Criteria</label>
+          <textarea id="opp-admin-elig" class="form-input" rows="2" placeholder="e.g. 2026/2027 ECE/EEE/Embedded graduates with knowledge of STM32 C." required></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label">Application URL</label>
+          <input type="url" id="opp-admin-link" class="form-input" placeholder="https://..." required />
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-opp')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Publish to Public Board</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 SiliconCraft Admin Panel. Standard Multi-Page Static Architecture.</span>
+        <span style="color: var(--neon-pink);">Standard Shared Hosting Ready</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    let activeTab = 'pending';
+
+    function openModal(id) {
+      document.getElementById(id)?.classList.add('active');
+    }
+    function closeModal(id) {
+      document.getElementById(id)?.classList.remove('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderOpportunities();
+    });
+
+    function switchOppTab(tab) {
+      activeTab = tab;
+      const tabPending = document.getElementById('tab-opp-pending');
+      const tabLive = document.getElementById('tab-opp-live');
+
+      if (tab === 'pending') {
+        tabPending.style.borderBottomColor = 'var(--neon-pink)';
+        tabPending.style.color = '#fff';
+        tabPending.style.fontWeight = '600';
+        tabLive.style.borderBottomColor = 'transparent';
+        tabLive.style.color = 'var(--text-faint)';
+        tabLive.style.fontWeight = 'normal';
+      } else {
+        tabLive.style.borderBottomColor = 'var(--neon-pink)';
+        tabLive.style.color = '#fff';
+        tabLive.style.fontWeight = '600';
+        tabPending.style.borderBottomColor = 'transparent';
+        tabPending.style.color = 'var(--text-faint)';
+        tabPending.style.fontWeight = 'normal';
+      }
+      renderOpportunities();
+    }
+
+    function renderOpportunities() {
+      const store = SiliconData.get();
+      const allOpps = store.opportunities || [];
+      const container = document.getElementById('admin-opps-container');
+
+      const pendingOpps = allOpps.filter(o => o.status === 'pending');
+      const liveOpps = allOpps.filter(o => o.status === 'approved' || o.status === 'published' || !o.status);
+
+      // Update counters
+      const badgePending = document.getElementById('badge-pending-opps');
+      const badgeLive = document.getElementById('badge-live-opps');
+      if (badgePending) badgePending.textContent = pendingOpps.length;
+      if (badgeLive) badgeLive.textContent = liveOpps.length;
+
+      const list = activeTab === 'pending' ? pendingOpps : liveOpps;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 4rem 1rem; background: var(--bg-surface); border-radius: 12px; border: 1px dashed var(--border-subtle);">
+            <div style="font-size: 2rem; margin-bottom: 0.8rem;">${activeTab === 'pending' ? '🎉' : '💼'}</div>
+            <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 0.4rem;">
+              ${activeTab === 'pending' ? 'No Opportunities Awaiting Verification' : 'No Live Opportunities'}
+            </h3>
+            <p style="color: var(--text-faint); font-size: 0.9rem; margin: 0;">
+              ${activeTab === 'pending' ? 'All submitted job and internship opportunities have been verified.' : 'Click "+ Post Verified Listing" to publish an opening.'}
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="grid grid-2" style="gap: 2rem;">
+          ${list.map(opp => {
+            const isPending = opp.status === 'pending';
+            const email = opp.contactEmail || opp.email || 'No email provided';
+            const hasEmail = email && email !== 'No email provided';
+            const mailtoUrl = hasEmail ? `mailto:${email}?subject=${encodeURIComponent('SiliconCraft Opportunity Verification: ' + (opp.title || 'Role'))}&body=${encodeURIComponent('Hi,\n\nWe received your opportunity posting on SiliconCraft:\nRole: ' + (opp.title || '') + '\nCompany: ' + (opp.org || '') + '\n\nBefore publishing it live to our engineering community, we wanted to verify:\n[Enter question or verification link here]\n\nBest regards,\nSiliconCraft Team')}` : '#';
+
+            return `
+              <div class="card card-glow" style="padding: 2.2rem; display: flex; flex-direction: column; justify-content: space-between; border-color: ${isPending ? 'rgba(255, 42, 133, 0.45)' : 'var(--border-subtle)'}; background: ${isPending ? 'linear-gradient(135deg, rgba(255, 42, 133, 0.04), var(--bg-surface))' : 'var(--bg-surface)'};">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                    <span class="badge ${isPending ? 'badge-pink' : 'badge-circuit'}">
+                      ${isPending ? '⏳ AWAITING VERIFICATION' : '✓ LIVE ON PUBLIC BOARD'}
+                    </span>
+                    <span style="font-size: 0.82rem; color: var(--text-faint); font-family: var(--font-mono);">
+                      ⏳ Deadline: ${opp.deadline || 'Open'}
+                    </span>
+                  </div>
+
+                  <h3 style="font-size: 1.25rem; color: #fff; margin-bottom: 0.4rem; line-height: 1.35;">
+                    ${opp.title}
+                  </h3>
+                  
+                  <div style="font-size: 0.95rem; color: var(--neon-pink); font-weight: 600; margin-bottom: 1rem;">
+                    🏢 ${opp.org} • <span style="color: var(--text-muted); font-weight: normal;">📍 ${opp.location}</span>
+                  </div>
+
+                  <!-- Submitter Contact Box -->
+                  <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1.2rem;">
+                    <div style="font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-faint); margin-bottom: 0.3rem;">SUBMITTER / HR CONTACT:</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                      <span style="font-size: 0.85rem; color: var(--neon-pink); font-family: var(--font-mono);">
+                        ${hasEmail ? `<a href="${mailtoUrl}" style="color: inherit; text-decoration: none;">✉ ${email}</a>` : `<span style="color: var(--text-faint);">${email}</span>`}
+                      </span>
+                      ${hasEmail ? `
+                        <button class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="copyToClipboard('${email}')">
+                          Copy Email
+                        </button>
+                      ` : ''}
+                    </div>
+                  </div>
+
+                  <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <div style="font-size: 0.78rem; font-family: var(--font-mono); color: var(--text-faint); margin-bottom: 0.35rem;">ELIGIBILITY:</div>
+                    <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; margin: 0;">
+                      ${opp.eligibility || 'Check application link for eligibility.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.2rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <a href="${opp.link || '#'}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="font-size: 0.78rem;">
+                      Test Application Link ↗
+                    </a>
+                    ${hasEmail ? `<a href="${mailtoUrl}" class="btn btn-outline btn-sm" style="font-size: 0.78rem; color: var(--neon-pink); border-color: var(--border-pink);">✉ Contact Submitter</a>` : ''}
+                  </div>
+
+                  <div style="display: flex; gap: 0.6rem; margin-top: 0.3rem;">
+                    ${isPending ? `
+                      <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="acceptOpportunity('${opp.id}')">
+                        ✓ Verify & Post to Live Board
+                      </button>
+                      <button class="btn btn-outline btn-sm" style="color: #ff5555; border-color: rgba(255,85,85,0.4);" onclick="rejectOpportunity('${opp.id}')">
+                        ✕ Reject
+                      </button>
+                    ` : `
+                      <a href="../opportunities.html" target="_blank" class="btn btn-outline btn-sm" style="flex: 1;">
+                        View Live Board ↗
+                      </a>
+                      <button class="btn btn-outline btn-sm" style="color: #ff5555; border-color: rgba(255,85,85,0.4);" onclick="deleteOpp('${opp.id}')">
+                        Delete Listing
+                      </button>
+                    `}
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function acceptOpportunity(id) {
+      const store = SiliconData.get();
+      const opp = (store.opportunities || []).find(o => o.id === id);
+      if (!opp) return;
+
+      opp.status = 'approved';
+      SiliconData.save(store);
+
+      showToast(`Verified "${opp.title}"! It is now live on the public board.`);
+      renderOpportunities();
+    }
+
+    function rejectOpportunity(id) {
+      if (confirm('Are you sure you want to reject this opportunity listing?')) {
+        const store = SiliconData.get();
+        store.opportunities = (store.opportunities || []).filter(o => o.id !== id);
+        SiliconData.save(store);
+
+        showToast('Opportunity submission rejected and removed.');
+        renderOpportunities();
+      }
+    }
+
+    function deleteOpp(id) {
+      if (confirm('Delete this opportunity listing from the board?')) {
+        const store = SiliconData.get();
+        store.opportunities = (store.opportunities || []).filter(o => o.id !== id);
+        SiliconData.save(store);
+
+        showToast('Opportunity deleted.');
+        renderOpportunities();
+      }
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Email address copied to clipboard!');
+      }).catch(() => {
+        showToast('Email: ' + text);
+      });
+    }
+
+    function openAddOppModal() {
+      document.getElementById('form-opp').reset();
+      openModal('modal-opp');
+    }
+
+    function handleSaveOpp(e) {
+      e.preventDefault();
+      const store = SiliconData.get();
+
+      const newOpp = {
+        id: 'opp_' + Date.now(),
+        title: document.getElementById('opp-admin-title').value.trim(),
+        org: document.getElementById('opp-admin-org').value.trim(),
+        contactEmail: document.getElementById('opp-admin-email').value.trim(),
+        type: document.getElementById('opp-admin-type').value,
+        location: document.getElementById('opp-admin-loc').value.trim(),
+        deadline: document.getElementById('opp-admin-date').value.trim(),
+        eligibility: document.getElementById('opp-admin-elig').value.trim(),
+        link: document.getElementById('opp-admin-link').value.trim(),
+        status: 'approved',
+        submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+
+      if (!Array.isArray(store.opportunities)) store.opportunities = [];
+      store.opportunities.unshift(newOpp);
+      SiliconData.save(store);
+
+      closeModal('modal-opp');
+      showToast('Verified opportunity published directly to live board!');
+      activeTab = 'live';
+      switchOppTab('live');
+    }
+
+    function showToast(message) {
+      let toast = document.getElementById('admin-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'admin-toast';
+        toast.style.cssText = `
+          position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+          background: #1b1f30; color: #fff; border: 1px solid var(--neon-pink);
+          border-radius: 8px; padding: 0.75rem 1.25rem; font-size: 0.85rem;
+          font-family: var(--font-mono); box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+          transition: all 0.3s ease; opacity: 0; transform: translateY(10px);
+        `;
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<span style="color: var(--neon-pink);">⚡</span> ${message}`;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Moderation — SiliconCraft Admin</title>
+  <meta name="description" content="Moderate community discussions, verify accepted solutions, and curate signal." />
+  
+  <script src="../assets/js/admin-guard.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Admin Header -->
+  <header class="site-header" style="border-bottom: 1px solid var(--border-pink);">
+    <div class="container nav-wrap">
+      <a href="dashboard.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span> <span style="font-size: 0.72rem; background: var(--neon-pink); color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; vertical-align: middle; margin-left: 0.4rem; font-family: var(--font-mono);">ADMIN</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="articles.html" class="nav-link">Articles</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link active">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="settings.html" class="nav-link">Settings</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="../community.html" target="_blank" class="btn btn-outline btn-sm">View Public Feed ↗</a>
+        <button class="btn btn-sm" style="background: rgba(255, 85, 85, 0.15); color: #ff5555; border: 1px solid rgba(255, 85, 85, 0.4);" onclick="logoutAdmin()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 3rem 1.5rem 6rem;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem;">
+      <div>
+        <h1 style="font-size: 2.2rem; color: #fff; margin-bottom: 0.3rem;">Community Discussion Moderation</h1>
+        <p style="color: var(--text-faint); font-size: 0.95rem;">
+          Verify answers, pin high-value questions, and moderate community threads.
+        </p>
+      </div>
+    </div>
+
+    <!-- Posts Moderation List -->
+    <div id="admin-posts-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+      <!-- Populated by JS -->
+    </div>
+
+  </main>
+
+  <!-- Edit Solution Modal -->
+  <div id="modal-solution" class="modal-backdrop">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('modal-solution')">×</button>
+      <h3 style="font-size: 1.25rem; color: #fff; margin-bottom: 1rem;">Set Verified Solution</h3>
+      <input type="hidden" id="sol-post-id" />
+      <p style="color: var(--text-faint); font-size: 0.85rem; margin-bottom: 1rem;">
+        This verified solution will appear highlighted in neon green with an official badge on the post's public page.
+      </p>
+      <div class="form-group">
+        <textarea id="sol-text" class="form-input" rows="5" placeholder="Detailed technical answer, register configuration, or circuit troubleshooting guidance..."></textarea>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modal-solution')">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="saveSolution()">Verify Solution</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 SiliconCraft Admin Panel. Standard Multi-Page Static Architecture.</span>
+        <span style="color: var(--neon-pink);">Standard Shared Hosting Ready</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    function logoutAdmin() {
+      sessionStorage.removeItem('siliconcraft_admin_auth');
+      sessionStorage.removeItem('siliconcraft_admin_time');
+      window.location.href = '../arthurmorgan.html';
+    }
+
+    function openModal(id) {
+      document.getElementById(id)?.classList.add('active');
+    }
+    function closeModal(id) {
+      document.getElementById(id)?.classList.remove('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPosts();
+    });
+
+    function renderPosts() {
+      const store = SiliconData.get();
+      const list = store.posts || [];
+      const container = document.getElementById('admin-posts-container');
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center; padding: 3rem; color: var(--text-faint);">
+            No discussions found.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(post => `
+        <div class="card" style="padding: 1.8rem; border-color: ${post.solution ? 'rgba(0, 230, 118, 0.3)' : 'var(--border-subtle)'};">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap;">
+            <div>
+              <span class="badge ${post.solution ? 'badge-circuit' : 'badge-pink'}" style="margin-right: 0.5rem;">
+                ${(post.type || 'DISCUSSION').toUpperCase()}
+              </span>
+              <span style="font-size: 0.82rem; color: var(--text-faint);">By <strong style="color: #fff;">${post.author}</strong> • ${post.time || 'Recently'}</span>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-outline btn-sm" onclick="openSolutionModal('${post.id}')">
+                ${post.solution ? 'Edit Solution' : '+ Verify Solution'}
+              </button>
+              <a href="../post-detail.html?id=${post.id}" target="_blank" class="btn btn-outline btn-sm">View</a>
+              <button class="btn btn-outline btn-sm" style="color: #ff5555; border-color: rgba(255,85,85,0.4);" onclick="deletePost('${post.id}')">Delete</button>
+            </div>
+          </div>
+
+          <h3 style="color: #fff; font-size: 1.15rem; margin-bottom: 0.6rem; line-height: 1.4;">
+            ${post.title}
+          </h3>
+
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.2rem;">
+            ${post.content}
+          </p>
+
+          ${post.solution ? `
+            <div style="background: rgba(0, 230, 118, 0.05); border: 1px solid rgba(0, 230, 118, 0.3); border-radius: 6px; padding: 1rem; margin-top: 0.8rem;">
+              <div style="font-size: 0.8rem; color: #00e676; font-weight: 600; margin-bottom: 0.3rem;">✓ VERIFIED SOLUTION:</div>
+              <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0; line-height: 1.5;">${post.solution}</p>
+            </div>
+          ` : `
+            <div style="font-size: 0.82rem; color: var(--text-faint); font-style: italic;">
+              No verified solution attached yet.
+            </div>
+          `}
+        </div>
+      `).join('');
+    }
+
+    function openSolutionModal(id) {
+      const store = SiliconData.get();
+      const p = store.posts.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('sol-post-id').value = id;
+      document.getElementById('sol-text').value = p.solution || '';
+      openModal('modal-solution');
+    }
+
+    function saveSolution() {
+      const id = document.getElementById('sol-post-id').value;
+      const text = document.getElementById('sol-text').value.trim();
+
+      const store = SiliconData.get();
+      const p = store.posts.find(item => item.id === id);
+      if (p) {
+        p.solution = text;
+        SiliconData.save(store);
+        closeModal('modal-solution');
+        renderPosts();
+      }
+    }
+
+    function deletePost(id) {
+      if (confirm('Are you sure you want to delete this thread?')) {
+        const store = SiliconData.get();
+        store.posts = store.posts.filter(p => p.id !== id);
+        SiliconData.save(store);
+        renderPosts();
+      }
+    }
+  </script>
+</body>
+</html>

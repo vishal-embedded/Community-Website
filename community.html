@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engineering Community — SiliconCraft</title>
+  <meta name="description" content="A community-driven discussion space for questions, architecture reviews, debugging help, and learning updates." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link active">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" id="user-nav-action" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section style="padding: 4.5rem 0 2.5rem; border-bottom: 1px solid var(--border-subtle); background: radial-gradient(circle at 50% 0%, rgba(255, 42, 133, 0.08), transparent 70%);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap;">
+        <div style="max-width: 760px;">
+          <span class="badge badge-pink" style="margin-bottom: 1rem; display: inline-block;">PEER COLLABORATION</span>
+          <h1 style="font-size: clamp(2.2rem, 4vw, 3rem); color: #fff; line-height: 1.15; margin-bottom: 1rem;">
+            Engineering Community & Discussions.
+          </h1>
+          <p style="font-size: 1.1rem; color: var(--text-muted); line-height: 1.6;">
+            Ask register-level questions, discuss RTOS architectures, share hardware debugging breakthroughs, and learn alongside students and practicing engineers.
+          </p>
+        </div>
+        <div>
+          <button class="btn btn-primary" onclick="openModal('modal-create-post')">
+            + Start Discussion / Ask Question
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Feed Area -->
+  <main class="container" style="padding: 3rem 1.5rem 6rem;">
+    <!-- Filter Buttons -->
+    <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2.5rem;" id="post-type-filters">
+      <button class="btn btn-primary btn-sm filter-btn" onclick="filterPosts('all', this)">All Discussions</button>
+      <button class="btn btn-outline btn-sm filter-btn" onclick="filterPosts('question', this)">Questions</button>
+      <button class="btn btn-outline btn-sm filter-btn" onclick="filterPosts('discussion', this)">Architecture Discussions</button>
+      <button class="btn btn-outline btn-sm filter-btn" onclick="filterPosts('project', this)">Learning Updates</button>
+    </div>
+
+    <!-- Community Posts Feed Container -->
+    <div id="community-feed-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+      <!-- Injected via JavaScript -->
+    </div>
+  </main>
+
+  <!-- Create Post Modal -->
+  <div id="modal-create-post" class="modal-backdrop">
+    <div class="modal" style="max-width: 640px;">
+      <div class="modal-header">
+        <h3 style="color: #fff; font-size: 1.25rem;">Start New Discussion</h3>
+        <button class="modal-close" onclick="closeModal('modal-create-post')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-create-post" onsubmit="handleCreatePost(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group">
+              <label class="form-label">Category Type</label>
+              <select id="post-form-type" class="form-input">
+                <option value="question">Technical Question</option>
+                <option value="discussion">Architecture Discussion</option>
+                <option value="project">Learning Update / Build Log</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Domain</label>
+              <select id="post-form-domain" class="form-input">
+                <option value="Embedded Systems">Embedded Systems</option>
+                <option value="Firmware & Low-Level C">Firmware & C</option>
+                <option value="Embedded Linux">Embedded Linux & Kernel</option>
+                <option value="VLSI & Semiconductor">VLSI & Digital Design</option>
+                <option value="Automotive & CAN">Automotive & CAN</option>
+                <option value="PCB & Hardware">PCB & Hardware</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Title</label>
+            <input type="text" id="post-form-title" class="form-input" placeholder="e.g. FreeRTOS context switch crash on Cortex-M4 — SysTick priority issue?" required />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Your Name & Background</label>
+            <input type="text" id="post-form-author" class="form-input" placeholder="e.g. Rahul Varma (Final Year ECE / Aspiring Firmware Engineer)" required />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.75rem;">
+            <label class="form-label">Discussion Details</label>
+            <textarea id="post-form-content" class="form-input" rows="5" placeholder="Describe the technical context, hardware setup, register values, or questions you have..." required></textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="btn btn-outline" onclick="closeModal('modal-create-post')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Post Discussion</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Circuit Canvas Background -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+
+  <script>
+    let currentFilter = 'all';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPosts();
+    });
+
+    function renderPosts() {
+      const store = SiliconData.get();
+      const container = document.getElementById('community-feed-container');
+      if (!container) return;
+
+      let list = store.posts || [];
+      if (currentFilter !== 'all') {
+        list = list.filter(p => (p.type || '').toLowerCase() === currentFilter.toLowerCase());
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
+            No discussions found under this filter. Be the first to start one!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(post => {
+        const isSolved = Boolean(post.solution);
+        const typeLabel = (post.type || 'QUESTION').toUpperCase().replace('_', ' ');
+        const domain = post.domain || 'Embedded Systems';
+        const repliesCount = Array.isArray(post.replies) ? post.replies.length : (post.replies || 0);
+
+        return `
+          <div class="card card-glow" style="padding: 2rem; border-color: ${isSolved ? 'rgba(0, 230, 118, 0.35)' : 'var(--border-subtle)'};">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                <span class="badge ${isSolved ? 'badge-circuit' : 'badge-pink'}">
+                  ${isSolved ? '✓ SOLVED' : typeLabel}
+                </span>
+                <span class="badge badge-circuit" style="font-size: 0.7rem;">${domain}</span>
+                <span style="font-size: 0.8rem; color: var(--text-faint); font-family: var(--font-mono);">• ${post.time || 'Recently'}</span>
+              </div>
+              
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button class="btn btn-outline btn-sm" onclick="upvotePost('${post.id}')" style="font-size: 0.78rem; padding: 0.35rem 0.75rem;">
+                  ⚡ Upvote (<span id="like-count-${post.id}">${post.likes || 0}</span>)
+                </button>
+              </div>
+            </div>
+
+            <h2 style="font-size: 1.25rem; color: #fff; margin-bottom: 0.6rem; line-height: 1.35;">
+              <a href="post-detail.html?id=${post.id}" style="color: inherit; text-decoration: none;">${post.title}</a>
+            </h2>
+
+            <div style="color: var(--text-faint); font-size: 0.85rem; margin-bottom: 1rem;">
+              By <strong style="color: #fff;">${post.author || 'Anonymous Engineer'}</strong>
+            </div>
+
+            <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 1.5rem;">
+              ${post.content ? (post.content.length > 240 ? post.content.substring(0, 240) + '...' : post.content) : ''}
+            </p>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="font-size: 0.82rem; color: var(--text-faint); font-family: var(--font-mono);">
+                💬 ${repliesCount} ${repliesCount === 1 ? 'Response' : 'Responses'}
+              </div>
+              <a href="post-detail.html?id=${post.id}" class="btn btn-outline btn-sm">
+                View Full Thread & Reply →
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterPosts(type, btn) {
+      currentFilter = type;
+      const buttons = document.querySelectorAll('#post-type-filters .filter-btn');
+      buttons.forEach(b => {
+        b.className = 'btn btn-outline btn-sm filter-btn';
+      });
+      if (btn) btn.className = 'btn btn-primary btn-sm filter-btn';
+      renderPosts();
+    }
+
+    function upvotePost(id) {
+      likePost(id);
+    }
+
+    function handleCreatePost(e) {
+      e.preventDefault();
+      const type = document.getElementById('post-form-type').value;
+      const domain = document.getElementById('post-form-domain').value;
+      const title = document.getElementById('post-form-title').value.trim();
+      const author = document.getElementById('post-form-author').value.trim();
+      const content = document.getElementById('post-form-content').value.trim();
+
+      if (!title || !content || !author) return;
+
+      const store = SiliconData.get();
+      const newPost = {
+        id: 'post_' + Date.now(),
+        title,
+        content,
+        author,
+        type,
+        domain,
+        time: 'Just now',
+        likes: 1,
+        replies: []
+      };
+
+      if (!Array.isArray(store.posts)) store.posts = [];
+      store.posts.unshift(newPost);
+      SiliconData.save(store);
+
+      closeModal('modal-create-post');
+      document.getElementById('form-create-post').reset();
+      showToast('Discussion published successfully!');
+      renderPosts();
+    }
+  </script>
+</body>
+</html>

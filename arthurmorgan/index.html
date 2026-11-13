@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arthur Morgan Console — Admin Gate</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script>
+    if (sessionStorage.getItem('siliconcraft_admin_auth') === 'true') {
+      window.location.replace('../admin/dashboard.html');
+    }
+  </script>
+</head>
+<body class="bg-circuit-grid" style="display: flex; min-height: 100vh; align-items: center; justify-content: center; padding: 1.5rem;">
+
+  <div class="card card-glow" style="width: 100%; max-width: 450px; padding: 2.8rem 2.2rem; border-color: var(--border-pink);">
+    
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <div class="brand-icon" style="margin: 0 auto 1rem; width: 56px; height: 56px; font-size: 1.8rem; box-shadow: 0 0 30px rgba(255,42,133,0.4); border-color: var(--neon-pink);">🤠</div>
+      <h1 style="font-size: 1.8rem; color: #fff; margin-bottom: 0.3rem; letter-spacing: -0.02em;">Arthur Morgan Console</h1>
+      <p style="color: var(--neon-pink); font-size: 0.82rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em;">
+        Secret Administrative Access Gate
+      </p>
+    </div>
+
+    <form id="arthur-login-form" onsubmit="handleArthurLogin(event)">
+      <div id="login-error" style="display: none; background: rgba(255, 85, 85, 0.12); border: 1px solid rgba(255, 85, 85, 0.4); color: #ff5555; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1.5rem; text-align: center;">
+        Access Denied: Invalid administrator passkey.
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Administrator ID</label>
+        <input type="text" id="admin-user" class="form-input" placeholder="admin" value="admin" required autocomplete="username" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Master Passkey / Password</label>
+        <input type="password" id="admin-pass" class="form-input" placeholder="Enter administrative passkey" required autocomplete="current-password" autofocus />
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.2rem; padding: 0.85rem; font-weight: 600;">
+        Unlock Admin Control Center →
+      </button>
+
+      <div style="text-align: center; margin-top: 1.8rem; border-top: 1px solid var(--border-subtle); padding-top: 1.2rem;">
+        <a href="../index.html" style="color: var(--text-faint); font-size: 0.82rem; text-decoration: none;">
+          ← Return to Public Website
+        </a>
+      </div>
+    </form>
+
+  </div>
+
+  <script src="../assets/js/data.js"></script>
+  <script>
+    function handleArthurLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('admin-user').value.trim();
+      const pass = document.getElementById('admin-pass').value.trim();
+      const errorEl = document.getElementById('login-error');
+
+      const correctPass = localStorage.getItem('siliconcraft_admin_key') || 'siliconcraft@admin2026';
+
+      if (user === 'admin' && pass === correctPass) {
+        sessionStorage.setItem('siliconcraft_admin_auth', 'true');
+        sessionStorage.setItem('siliconcraft_admin_time', Date.now().toString());
+        errorEl.style.display = 'none';
+        window.location.href = '../admin/dashboard.html';
+      } else {
+        errorEl.style.display = 'block';
+        document.getElementById('admin-pass').value = '';
+        document.getElementById('admin-pass').focus();
+      }
+    }
+  </script>
+</body>
+</html>

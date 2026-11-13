@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SiliconCraft — From Classrooms to Silicon</title>
+  <meta name="description" content="A community-driven knowledge ecosystem for Embedded Systems, Electronics, VLSI, and Semiconductor engineers." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" id="user-nav-action" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        <span>BRIDGING COLLEGE TO SILICON INDUSTRY</span>
+      </div>
+
+      <h1 class="hero-title">
+        From Classrooms to <span class="hero-gradient">Silicon.</span>
+      </h1>
+
+      <p class="hero-desc">
+        Real industry insights, practical career guidance, and a community for the next generation of <strong>Embedded Systems, Electronics, and Semiconductor</strong> engineers.
+      </p>
+
+      <div class="hero-actions">
+        <a href="insights.html" class="btn btn-primary">
+          Read Industry Insights →
+        </a>
+        <a href="interviews.html" class="btn btn-outline">
+          Explore Interviews
+        </a>
+        <a href="community.html" class="btn btn-outline">
+          Join Community
+        </a>
+      </div>
+
+      <!-- Quick Stats Row -->
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number accent">14,800+</div>
+          <div class="stat-label">Students & Engineers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">45+</div>
+          <div class="stat-label">Industry Interviews</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number accent">120+</div>
+          <div class="stat-label">Technical Guides</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Hardware Builds</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Learn From Industry (Expert Interviews) -->
+  <section class="container" style="padding: 5rem 1.5rem 2rem;">
+    <div class="section-header">
+      <div>
+        <span class="section-tag">Verified Industry Perspectives</span>
+        <h2 class="section-title">Learn From Industry Leaders</h2>
+        <p class="section-desc">Candid conversations with principal engineers, architects, and founders on what companies actually expect.</p>
+      </div>
+      <a href="interviews.html" class="btn btn-outline btn-sm">
+        All Expert Interviews →
+      </a>
+    </div>
+
+    <div id="home-interviews-grid" class="grid-2">
+      <!-- Populated dynamically via JS -->
+    </div>
+  </section>
+
+  <!-- Section: Industry Insights & Deep Technical Guides -->
+  <section class="container" style="padding: 5rem 1.5rem 2rem;">
+    <div class="section-header">
+      <div>
+        <span class="section-tag">Hands-On Engineering</span>
+        <h2 class="section-title">Latest Industry Insights</h2>
+        <p class="section-desc">Practical deep-dives into registers, DMA drivers, FreeRTOS architectures, and hardware testing.</p>
+      </div>
+      <a href="insights.html" class="btn btn-outline btn-sm">
+        Browse All Insights →
+      </a>
+    </div>
+
+    <div id="home-insights-grid" class="grid-3">
+      <!-- Populated dynamically via JS -->
+    </div>
+  </section>
+
+  <!-- Section: Latest From Community -->
+  <section class="container" style="padding: 5rem 1.5rem 2rem;">
+    <div class="section-header">
+      <div>
+        <span class="section-tag">Peer Learning</span>
+        <h2 class="section-title">Latest From the Community</h2>
+        <p class="section-desc">Technical questions, debugging experiences, and build logs shared by working engineers and students.</p>
+      </div>
+      <div style="display: flex; gap: 0.8rem;">
+        <button class="btn btn-primary btn-sm" onclick="openModal('modal-create-post')">+ Ask Question</button>
+        <a href="community.html" class="btn btn-outline btn-sm">Open Feed →</a>
+      </div>
+    </div>
+
+    <div id="home-community-grid" class="grid-3">
+      <!-- Populated dynamically via JS -->
+    </div>
+  </section>
+
+  <!-- Section: Projects From Community -->
+  <section class="container" style="padding: 5rem 1.5rem 2rem;">
+    <div class="section-header">
+      <div>
+        <span class="section-tag">Hardware Builds</span>
+        <h2 class="section-title">Hardware Projects Showcase</h2>
+        <p class="section-desc">Explore verified hardware builds with bills of materials (BOM), schematics, and open-source firmware.</p>
+      </div>
+      <div style="display: flex; gap: 0.8rem;">
+        <button class="btn btn-primary btn-sm" onclick="openModal('modal-submit-project')">+ Submit Build</button>
+        <a href="projects.html" class="btn btn-outline btn-sm">All Projects →</a>
+      </div>
+    </div>
+
+    <div id="home-projects-grid" class="grid-3">
+      <!-- Populated dynamically via JS -->
+    </div>
+  </section>
+
+  <!-- Section: Opportunities Preview -->
+  <section class="container" style="padding: 5rem 1.5rem 2rem;">
+    <div class="section-header">
+      <div>
+        <span class="section-tag">Career Pipeline</span>
+        <h2 class="section-title">Verified Hardware Opportunities</h2>
+        <p class="section-desc">Curated internships, fresher roles, and national hackathons strictly in firmware and silicon.</p>
+      </div>
+      <a href="opportunities.html" class="btn btn-outline btn-sm">View All Opportunities →</a>
+    </div>
+
+    <div id="home-opportunities-grid" class="grid-2">
+      <!-- Populated dynamically via JS -->
+    </div>
+  </section>
+
+  <!-- Section: Community Manifesto CTA -->
+  <section class="container" style="padding: 5rem 1.5rem 5rem;">
+    <div class="card" style="text-align: center; padding: 4.5rem 1.8rem; background: linear-gradient(135deg, rgba(255, 42, 133, 0.08) 0%, var(--bg-surface) 100%); border-color: var(--border-pink);">
+      <span style="font-size: 0.78rem; font-family: var(--font-mono); color: var(--neon-pink); text-transform: uppercase;">A Platform Built For You</span>
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.6rem); color: #fff; margin: 0.6rem 0 1.2rem;">
+        The guidance you wish you had when you started out.
+      </h2>
+      <p style="font-size: 1.05rem; color: var(--text-muted); max-width: 640px; margin: 0 auto 2.4rem; line-height: 1.7;">
+        Learn directly from engineers working at top semiconductor and embedded firms. Connect, share projects, ask debugging questions, and grow without wandering for years.
+      </p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="about.html" class="btn btn-primary">Read Our Story & Vision →</a>
+        <a href="community.html" class="btn btn-outline">Join the Community</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal: Create Post -->
+  <div id="modal-create-post" class="modal-backdrop">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('modal-create-post')">×</button>
+      <h3 style="font-size: 1.25rem; color: #fff; margin-bottom: 1.25rem;">Ask a Question / Share Knowledge</h3>
+      
+      <form id="form-create-post" onsubmit="handleCreatePost(event)">
+        <div class="form-group">
+          <label class="form-label">Contribution Type</label>
+          <select id="post-form-type" class="form-select">
+            <option value="question">Technical Question (Ask for Debugging Help)</option>
+            <option value="discussion">Technical Discussion</option>
+            <option value="build_in_public">Build in Public Log</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="post-form-domain" class="form-select">
+            <option value="embedded-systems">Embedded Systems & Firmware</option>
+            <option value="embedded-linux">Embedded Linux & BSP</option>
+            <option value="vlsi">VLSI & Chip Design</option>
+            <option value="automotive">Automotive Electronics & CAN</option>
+            <option value="pcb-hardware">Hardware & PCB Design</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" id="post-form-title" class="form-input" required placeholder="e.g. Why does my I2C bus hang at 400kHz on STM32?" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Detailed Content & Code</label>
+          <textarea id="post-form-content" class="form-textarea" rows="4" required placeholder="Describe what you are building, the error observed on your oscilloscope, and register settings..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-create-post')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Publish to Community</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Submit Project -->
+  <div id="modal-submit-project" class="modal-backdrop">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('modal-submit-project')">×</button>
+      <h3 style="font-size: 1.25rem; color: #fff; margin-bottom: 1.25rem;">Showcase Your Hardware Project</h3>
+      
+      <form id="form-submit-proj" onsubmit="handleSubmitProject(event)">
+        <div class="form-group">
+          <label class="form-label">Project Title</label>
+          <input type="text" id="proj-form-title" class="form-input" required placeholder="e.g. Dual-Node CAN FD Logger on STM32G4" />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Creator / Team Name</label>
+            <input type="text" id="proj-form-creator" class="form-input" required placeholder="e.g. Arjun Mehta (Final Year ECE)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Email (for verification)</label>
+            <input type="email" id="proj-form-email" class="form-input" required placeholder="e.g. arjun@domain.com" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Short Summary</label>
+          <textarea id="proj-form-desc" class="form-textarea" rows="2" required placeholder="What does this system do in 2 sentences?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tech Stack (comma-separated)</label>
+          <input type="text" id="proj-form-tech" class="form-input" required placeholder="STM32, FreeRTOS, CAN FD, KiCad" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">GitHub Repository or Schematics Link</label>
+          <input type="url" id="proj-form-github" class="form-input" placeholder="https://github.com/your-username/project" />
+        </div>
+
+        <div style="background: rgba(255, 42, 133, 0.05); border: 1px solid var(--border-pink); border-radius: 6px; padding: 0.75rem 0.9rem; margin-bottom: 1.25rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+          <strong style="color: var(--neon-pink);">🛡️ Verified Showcase:</strong> Hardware submissions are reviewed by our engineering moderation team before going live. We will email you if any schematic adjustments are needed.
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-submit-project')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Hardware Build</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Interactive Circuit Background Canvas -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderHomeInterviews();
+      renderHomeInsights();
+      renderHomeCommunity();
+      renderHomeProjects();
+      renderHomeOpportunities();
+    });
+
+    // 1. Featured Interviews
+    function renderHomeInterviews() {
+      const store = SiliconData.get();
+      const grid = document.getElementById('home-interviews-grid');
+      if (!grid) return;
+
+      const featured = (store.interviews || []).slice(0, 2);
+      grid.innerHTML = featured.map(item => `
+        <div class="card card-glow" style="padding: 2.2rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,42,133,0.15); border: 1px solid var(--neon-pink); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #fff;">
+                👤
+              </div>
+              <div>
+                <h4 style="font-size: 1.05rem; color: #fff; margin: 0;">${item.name}</h4>
+                <div style="font-size: 0.8rem; color: var(--neon-pink); font-family: var(--font-mono);">${item.role} @ ${item.company}</div>
+              </div>
+            </div>
+
+            <span class="badge badge-pink" style="margin-bottom: 0.75rem; display: inline-block;">${item.topic}</span>
+            <h3 style="font-size: 1.25rem; color: #fff; line-height: 1.35; margin-bottom: 0.75rem;">
+              <a href="interview-detail.html?id=${item.id}" style="color: inherit; text-decoration: none;">${item.title}</a>
+            </h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+              ${item.summary}
+            </p>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+            <span style="font-size: 0.78rem; color: var(--text-faint); font-family: var(--font-mono);">${item.readTime || '10 min read'}</span>
+            <a href="interview-detail.html?id=${item.id}" class="btn btn-outline btn-sm">Read Full Interview →</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 2. Latest Insights
+    function renderHomeInsights() {
+      const store = SiliconData.get();
+      const grid = document.getElementById('home-insights-grid');
+      if (!grid) return;
+
+      const articles = (store.articles || []).slice(0, 3);
+      grid.innerHTML = articles.map(art => `
+        <div class="card card-glow" style="padding: 1.8rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <span class="badge badge-circuit" style="margin-bottom: 0.8rem; display: inline-block;">${art.category}</span>
+            <h3 style="font-size: 1.15rem; color: #fff; line-height: 1.35; margin-bottom: 0.6rem;">
+              <a href="insights.html" style="color: inherit; text-decoration: none;">${art.title}</a>
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1.2rem;">
+              ${art.desc}
+            </p>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.8rem;">
+            <span style="font-size: 0.78rem; color: var(--text-faint); font-family: var(--font-mono);">${art.readTime}</span>
+            <a href="insights.html" class="btn btn-outline btn-sm">Read Guide →</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 3. Community Discussions
+    function renderHomeCommunity() {
+      const store = SiliconData.get();
+      const grid = document.getElementById('home-community-grid');
+      if (!grid) return;
+
+      const posts = (store.posts || []).slice(0, 3);
+      grid.innerHTML = posts.map(post => `
+        <div class="card" style="padding: 1.6rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+              <span class="badge ${post.solution ? 'badge-circuit' : 'badge-pink'}" style="font-size: 0.72rem;">
+                ${post.solution ? 'SOLVED' : (post.type || 'QUESTION').toUpperCase()}
+              </span>
+              <span style="font-size: 0.75rem; color: var(--text-faint);">${post.time || '2h ago'}</span>
+            </div>
+            <h4 style="font-size: 1rem; color: #fff; line-height: 1.35; margin-bottom: 0.5rem;">
+              <a href="post-detail.html?id=${post.id}" style="color: inherit; text-decoration: none;">${post.title}</a>
+            </h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+              ${post.content.length > 105 ? post.content.substring(0, 105) + '...' : post.content}
+            </p>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.8rem;">
+            <span style="font-size: 0.78rem; color: var(--text-faint);">${post.author.split('(')[0]}</span>
+            <a href="post-detail.html?id=${post.id}" style="font-size: 0.82rem; color: var(--neon-pink); text-decoration: none;">Discuss →</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 4. Projects Showcase
+    function renderHomeProjects() {
+      const store = SiliconData.get();
+      const grid = document.getElementById('home-projects-grid');
+      if (!grid) return;
+
+      const isApproved = p => (p.status === 'published' || p.status === 'approved' || !p.status);
+      const projects = (store.projects || []).filter(isApproved).slice(0, 3);
+      grid.innerHTML = projects.map(proj => `
+        <div class="card card-glow" style="padding: 1.8rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+              <span class="badge badge-pink" style="font-size: 0.72rem;">HARDWARE BUILD</span>
+              <span style="font-size: 0.8rem; color: var(--text-faint);">⭐ ${proj.likes || 42}</span>
+            </div>
+            <h4 style="font-size: 1.05rem; color: #fff; line-height: 1.35; margin-bottom: 0.5rem;">
+              <a href="project-detail.html?id=${proj.id}" style="color: inherit; text-decoration: none;">${proj.title}</a>
+            </h4>
+            <div style="font-size: 0.8rem; color: var(--text-faint); margin-bottom: 0.8rem;">By ${proj.creator}</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+              ${proj.desc.length > 95 ? proj.desc.substring(0, 95) + '...' : proj.desc}
+            </p>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.8rem;">
+            <span style="font-size: 0.75rem; color: var(--neon-pink); font-family: var(--font-mono);">${proj.tech[0]}</span>
+            <a href="project-detail.html?id=${proj.id}" class="btn btn-outline btn-sm">Inspect Specs →</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 5. Opportunities
+    function renderHomeOpportunities() {
+      const store = SiliconData.get();
+      const grid = document.getElementById('home-opportunities-grid');
+      if (!grid) return;
+
+      const isApproved = o => (o.status === 'published' || o.status === 'approved' || !o.status);
+      const opps = (store.opportunities || []).filter(isApproved).slice(0, 2);
+      grid.innerHTML = opps.map(opp => `
+        <div class="card" style="padding: 1.8rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+              <span class="badge badge-pink" style="font-size: 0.75rem;">${opp.type.toUpperCase()}</span>
+              <span style="font-size: 0.78rem; color: var(--text-faint); font-family: var(--font-mono);">Deadline: ${opp.deadline}</span>
+            </div>
+            <h3 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.3rem;">${opp.title}</h3>
+            <div style="font-size: 0.9rem; color: var(--neon-pink); font-weight: 600; margin-bottom: 0.8rem;">
+              🏢 ${opp.org} • <span style="color: var(--text-muted); font-weight: normal;">📍 ${opp.location}</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.2rem;">
+              ${opp.eligibility}
+            </p>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.8rem;">
+            <a href="${opp.link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Apply Direct ↗</a>
+            <a href="opportunities.html" style="font-size: 0.82rem; color: var(--text-faint); text-decoration: none;">View All Opportunities →</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Form Handlers
+    function handleCreatePost(e) {
+      e.preventDefault();
+      const store = SiliconData.get();
+      const title = document.getElementById('post-form-title').value.trim();
+      const content = document.getElementById('post-form-content').value.trim();
+      const type = document.getElementById('post-form-type').value;
+
+      const newPost = {
+        id: 'post_' + Date.now(),
+        type: type,
+        title: title,
+        author: (store.currentUser && store.currentUser.name) || 'Engineering Student',
+        content: content,
+        likes: 1,
+        time: 'Just now'
+      };
+
+      store.posts.unshift(newPost);
+      SiliconData.save(store);
+      closeModal('modal-create-post');
+      document.getElementById('form-create-post').reset();
+      showToast('Question published to community!');
+      renderHomeCommunity();
+    }
+
+    function handleSubmitProject(e) {
+      e.preventDefault();
+      const store = SiliconData.get();
+      const title = document.getElementById('proj-form-title').value.trim();
+      const creator = document.getElementById('proj-form-creator').value.trim();
+      const creatorEmail = document.getElementById('proj-form-email').value.trim();
+      const desc = document.getElementById('proj-form-desc').value.trim();
+      const techStr = document.getElementById('proj-form-tech').value.trim();
+      const github = document.getElementById('proj-form-github').value.trim();
+
+      const newProj = {
+        id: 'proj_' + Date.now(),
+        title: title,
+        creator: creator,
+        creatorEmail: creatorEmail,
+        desc: desc,
+        tech: techStr.split(',').map(s => s.trim()).filter(Boolean),
+        github: github,
+        likes: 0,
+        status: 'pending',
+        time: 'Pending Review',
+        submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+
+      store.projects.unshift(newProj);
+      SiliconData.save(store);
+      closeModal('modal-submit-project');
+      document.getElementById('form-submit-proj').reset();
+      showToast('Hardware build submitted! Awaiting admin verification.');
+      renderHomeProjects();
+    }
+  </script>
+</body>
+</html>

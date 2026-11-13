@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hardware Project Blueprint — SiliconCraft</title>
+  <meta name="description" content="Technical hardware specifications, schematics, and firmware breakdown." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link active">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" id="user-nav-action" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container-narrow" style="padding: 3.5rem 1.5rem 6rem;" id="project-detail-container">
+    <!-- Populated by JavaScript -->
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Circuit Canvas Background -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const projId = urlParams.get('id') || 'proj_01';
+      const store = SiliconData.get();
+      const proj = (store.projects || []).find(p => p.id === projId) || store.projects[0];
+      const container = document.getElementById('project-detail-container');
+
+      if (!proj) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 4rem 1rem;">
+            <h2 style="color: #fff; margin-bottom: 1rem;">Project Not Found</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">The requested project specifications could not be located.</p>
+            <a href="projects.html" class="btn btn-outline">← Back to Project Gallery</a>
+          </div>
+        `;
+        return;
+      }
+
+      document.title = `${proj.title} — SiliconCraft Project Showcase`;
+
+      const techBadges = (proj.tech || []).map(t => `<span class="badge" style="background: rgba(255,42,133,0.12); color: var(--neon-pink); border-color: rgba(255,42,133,0.25);">${t}</span>`).join(' ');
+      const hwList = (proj.hardware || ['Standard Custom PCB', 'Microcontroller / FPGA Eval Board', 'Signal conditioning front-end']).map(h => `<li style="margin-bottom: 0.6rem; color: var(--text-muted);"><span style="color: var(--neon-pink); margin-right: 0.5rem;">▸</span>${h}</li>`).join('');
+
+      container.innerHTML = `
+        <div style="margin-bottom: 2rem;">
+          <a href="projects.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+            <span>←</span> Back to Hardware Showcase
+          </a>
+        </div>
+
+        <div class="card card-glow" style="padding: 2.5rem; margin-bottom: 2.5rem; border-color: var(--border-pink);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+              <span class="badge badge-pink" style="margin-bottom: 0.8rem; display: inline-block;">VERIFIED HARDWARE SHOWCASE</span>
+              <h1 style="font-size: 2.2rem; color: #fff; line-height: 1.25; margin-bottom: 0.6rem;">${proj.title}</h1>
+              <div style="color: var(--text-faint); font-size: 0.92rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <span>🛠️ Built by <strong style="color: #fff;">${proj.creator}</strong></span>
+                <span>•</span>
+                <span>⭐ ${proj.likes || 42} Bookmarks</span>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 0.8rem; align-items: center;">
+              <button class="btn btn-outline btn-sm" onclick="upvoteProject('${proj.id}')">
+                <span>⚡ Upvote (<span id="like-count-${proj.id}">${proj.likes || 0}</span>)</span>
+              </button>
+              ${proj.github ? `<a href="${proj.github}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">GitHub & Schematics ↗</a>` : ''}
+            </div>
+          </div>
+
+          <p style="font-size: 1.12rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem;">
+            ${proj.desc}
+          </p>
+
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            ${techBadges}
+          </div>
+        </div>
+
+        <!-- Problem & Solution Deep Dive -->
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 3rem;">
+          
+          <div class="card" style="padding: 2rem;">
+            <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem;">
+              <span style="color: #ff5555;">⚠️</span> Engineering Challenge & Problem Statement
+            </h3>
+            <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">
+              ${proj.problem || 'Standard academic setups rarely reflect industrial transient environments and timing constraints. The challenge was building an architecture that maintains deterministic performance under extreme EMI, power supply fluctuation, and high packet throughput without data drop.'}
+            </p>
+          </div>
+
+          <div class="card" style="padding: 2rem; border-color: rgba(255, 42, 133, 0.3);">
+            <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem;">
+              <span style="color: var(--neon-pink);">💡</span> Architecture & Firmware Solution
+            </h3>
+            <p style="color: var(--text-muted); line-height: 1.7; font-size: 0.98rem;">
+              ${proj.solution || 'Engineered a multi-layered design separating hardware interrupt handlers from processing threads. Employed circular DMA buffers, interrupt priority masking, and zero-copy packet queues to achieve continuous throughput.'}
+            </p>
+          </div>
+
+          <div class="card" style="padding: 2rem;">
+            <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem;">
+              <span style="color: var(--neon-pink);">📐</span> Bill of Materials (BOM) & Key Hardware
+            </h3>
+            <ul style="list-style: none; padding-left: 0; line-height: 1.6;">
+              ${hwList}
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Reproduction & Verification Guidance -->
+        <div class="card" style="padding: 2.2rem; background: rgba(14, 17, 24, 0.7); margin-bottom: 3.5rem;">
+          <h3 style="color: #fff; font-size: 1.15rem; margin-bottom: 0.8rem;">How to Reproduce or Adapt This Project</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.65; margin-bottom: 1.5rem;">
+            To replicate this build in your university lab or home bench, clone the repository, install KiCad for PCB layout inspection, and compile firmware using GCC-ARM-None-EABI or the vendor toolchain.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            ${proj.github ? `<a href="${proj.github}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">View Source Code</a>` : ''}
+            <a href="community.html" class="btn btn-primary btn-sm">Ask Question in Community</a>
+          </div>
+        </div>
+
+        <!-- Other Projects to Explore -->
+        <div>
+          <h3 style="color: #fff; font-size: 1.3rem; margin-bottom: 1.5rem;">More Community Hardware Builds</h3>
+          <div class="grid grid-3">
+            ${store.projects.filter(p => p.id !== proj.id).slice(0, 3).map(p => `
+              <div class="card" style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                  <h4 style="color: #fff; font-size: 1.05rem; margin-bottom: 0.5rem; line-height: 1.35;">
+                    <a href="project-detail.html?id=${p.id}" style="color: inherit; text-decoration: none;">${p.title}</a>
+                  </h4>
+                  <p style="color: var(--text-faint); font-size: 0.82rem; margin-bottom: 0.8rem;">By ${p.creator}</p>
+                  <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 1rem;">
+                    ${p.desc.length > 85 ? p.desc.substring(0, 85) + '...' : p.desc}
+                  </p>
+                </div>
+                <a href="project-detail.html?id=${p.id}" class="btn btn-outline btn-sm" style="align-self: flex-start;">Inspect Project →</a>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+
+    function upvoteProject(id) {
+      const store = SiliconData.get();
+      const proj = store.projects.find(p => p.id === id);
+      if (proj) {
+        proj.likes = (proj.likes || 0) + 1;
+        SiliconData.save(store);
+        const el = document.getElementById(`like-count-${id}`);
+        if (el) el.textContent = proj.likes;
+        showToast('Project upvoted!');
+      }
+    }
+  </script>
+</body>
+</html>

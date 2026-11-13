@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Industry Expert Interview — SiliconCraft</title>
+  <meta name="description" content="In-depth conversation with an industry engineering leader." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-circuit-grid">
+
+  <!-- Site Navigation Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">⚡</div>
+        <span>Silicon<span class="brand-accent">Craft</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="insights.html" class="nav-link">Insights</a>
+        <a href="interviews.html" class="nav-link active">Interviews</a>
+        <a href="community.html" class="nav-link">Community</a>
+        <a href="projects.html" class="nav-link">Projects</a>
+        <a href="opportunities.html" class="nav-link">Opportunities</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" id="user-nav-action" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="nav-mobile-toggle" id="nav-mobile-toggle" aria-label="Toggle Navigation" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Interview Content -->
+  <main class="container-narrow" style="padding: 3.5rem 1.5rem 6rem;" id="interview-detail-container">
+    <!-- Populated dynamically via JS -->
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <!-- Circuit Canvas Background -->
+  <canvas id="circuit-canvas"></canvas>
+
+  <!-- Scripts -->
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/circuit-bg.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const intId = urlParams.get('id') || 'int_01';
+      const store = SiliconData.get();
+      const item = (store.interviews || []).find(i => i.id === intId) || (store.interviews && store.interviews[0]);
+      const container = document.getElementById('interview-detail-container');
+      if (!container || !item) return;
+
+      const expertName = item.name || item.expertName || 'Industry Architect';
+      const expertRole = item.role || item.expertRole || 'Senior Engineer';
+      const expertCompany = item.company || item.expertCompany || 'Silicon Industry';
+      const readTime = item.readTime || item.readingTime || '12 min read';
+      const takeaways = item.keyTakeaways || item.takeaways || [
+        'Master pointer arithmetic, memory alignment, and volatile keywords in C.',
+        'Read microchip reference manuals and datasheets before touching frameworks.',
+        'Build end-to-end hardware projects with real communication protocols (UART, SPI, I2C, CAN).',
+        'Learn to debug using logic analyzers and oscilloscopes, not just printf.',
+        'Understand RTOS context switching, mutexes, semaphores, and interrupt priority.'
+      ];
+
+      document.title = `${item.title} — SiliconCraft`;
+
+      // QA Sections
+      const qaList = item.qa || item.sections || [];
+      const qaHtml = qaList.length > 0 ? qaList.map((qa, idx) => `
+        <div style="margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border-subtle);">
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--neon-pink); text-transform: uppercase; margin-bottom: 0.5rem;">
+            Question ${idx + 1}
+          </div>
+          <h3 style="color: #fff; font-size: 1.25rem; line-height: 1.35; margin-bottom: 1rem;">
+            ${qa.q || qa.question || 'Engineering Topic'}
+          </h3>
+          <div style="color: var(--text-secondary); font-size: 0.98rem; line-height: 1.75; white-space: pre-line;">
+            ${qa.a || qa.answer || ''}
+          </div>
+        </div>
+      `).join('') : `
+        <div style="color: var(--text-secondary); font-size: 1rem; line-height: 1.8; white-space: pre-line;">
+          ${item.transcript || item.content || item.summary || ''}
+        </div>
+      `;
+
+      container.innerHTML = `
+        <div style="margin-bottom: 2rem;">
+          <a href="interviews.html" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+            ← Back to All Interviews
+          </a>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+          <span class="badge badge-pink" style="margin-bottom: 1rem; display: inline-block;">${item.topic || 'CAREER INSIGHT'}</span>
+          <h1 style="font-size: clamp(1.8rem, 3.5vw, 2.5rem); color: #fff; line-height: 1.25; margin-bottom: 1.5rem;">
+            ${item.title}
+          </h1>
+
+          <!-- Expert Info Header Card -->
+          <div class="card" style="padding: 1.5rem 1.8rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.25rem; background: var(--bg-surface);">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: var(--neon-pink-dim); border: 1px solid var(--border-pink); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff; flex-shrink: 0;">
+              ⚡
+            </div>
+            <div>
+              <h3 style="color: #fff; font-size: 1.2rem; margin: 0 0 0.25rem;">${expertName}</h3>
+              <div style="color: var(--neon-pink); font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500;">
+                ${expertRole} @ <span style="color: #fff;">${expertCompany}</span>
+              </div>
+              <div style="color: var(--text-faint); font-size: 0.78rem; font-family: var(--font-mono); margin-top: 0.3rem;">
+                Estimated Read: ${readTime}
+              </div>
+            </div>
+          </div>
+
+          <!-- Abstract / Summary -->
+          <div style="font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 2.5rem; border-left: 3px solid var(--neon-pink); padding-left: 1.25rem; background: rgba(255, 42, 133, 0.03); padding: 1.25rem; border-radius: 0 8px 8px 0;">
+            ${item.summary || ''}
+          </div>
+        </div>
+
+        <!-- 5 Key Takeaways -->
+        <div class="card" style="padding: 2rem; margin-bottom: 3rem; background: rgba(14, 17, 24, 0.85); border-color: rgba(255, 42, 133, 0.35); box-shadow: var(--neon-pink-glow-sm);">
+          <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem;">
+            <span style="color: var(--neon-pink);">✦</span> Key Takeaways For Students & Engineers
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            ${takeaways.map((t, idx) => `
+              <div style="display: flex; gap: 0.85rem; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
+                <span style="width: 24px; height: 24px; border-radius: 50%; background: var(--neon-pink-dim); color: var(--neon-pink-light); border: 1px solid var(--border-pink); font-family: var(--font-mono); font-size: 0.78rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">${idx + 1}</span>
+                <span>${t}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Full Q&A Transcript -->
+        <div style="margin-bottom: 3.5rem;">
+          <h3 style="color: #fff; font-size: 1.4rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
+            Full Conversation Transcript
+          </h3>
+          ${qaHtml}
+        </div>
+
+        <!-- Next Step CTA -->
+        <div class="card" style="padding: 2.5rem; text-align: center; background: linear-gradient(135deg, rgba(255,42,133,0.06), var(--bg-surface)); border-color: var(--border-pink);">
+          <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 0.5rem;">Have questions about this career trajectory?</h3>
+          <p style="color: var(--text-muted); font-size: 0.92rem; max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.6;">
+            Discuss this interview or ask specific technical questions with fellow hardware and embedded engineers in our community.
+          </p>
+          <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <a href="community.html" class="btn btn-primary">Join Community Discussion →</a>
+            <a href="interviews.html" class="btn btn-outline">Explore More Interviews</a>
+          </div>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
